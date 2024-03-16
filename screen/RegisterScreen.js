@@ -1,45 +1,135 @@
 // LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text } from 'react-native';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
+import { useForm, Controller } from "react-hook-form"
 
 const RegisterScreen = ({ navigation }) => {
-    const [username, setUsername] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
+    const [repassword, setRepassword] = useState('');
+    const [step1, setStep1] = useState(true);
+    const [step2, setStep2] = useState(false);
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            phoneNumber: "",
+            password: "",
+            repassword: "",
+        },
+    })
 
-    const handleLogin = () => {
-        // Logic kiểm tra đăng nhập ở đây
-        if (username === 'admin' && password === 'admin') {
-            navigation.navigate('Main');
-        }
+    const handleRegister = (data) => {
+        console.log(data);
+        // if (data.password !== data.repassword) {
+        //     Alert.alert('Mật khẩu không khớp');
+        //     return;
+        // }
+        setStep1(false);
+        setStep2(true);
     };
+
+    const handleRegisterOTP = (data) => {
+        console.log(data);
+        navigation.navigate('RegisterStep2');
+    }
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{process.env.EXPO_PUBLIC_APP_NAME}</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Số điện thoại"
-                    value={username}
-                    onChangeText={setUsername}
-                    placeholderTextColor="#fff"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Mật khẩu"
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholderTextColor="#fff"
-                    secureTextEntry
-                />
-                    <Button title="Đăng nhập" onPress={handleLogin} style={{ width: '100%' }} />
-                    <Text
-                        onPress={() => navigation.navigate('Login')}
-                        style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
-                        Bạn đã có tài khoản? Đăng nhập ngay
-                    </Text>
-            </ImageBackground>
+            {
+                step1 ? (
+                    <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
+                    <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={errors.phoneNumber ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    placeholder="Số điện thoại"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    placeholderTextColor="#fff"
+                                    keyboardType='numeric'
+                                />
+                            )}
+                            name="phoneNumber"
+                            rules={{
+                                required: { value: true, message: "Số điện thoại không được bỏ trống" },
+                                pattern: { value: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" }
+                            }}
+                        />
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={errors.password ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    placeholder="Mật khẩu"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    placeholderTextColor="#fff"
+                                    secureTextEntry
+                                />
+                            )}
+                            name="password"
+                            rules={{ required: { value: true, message: "Mật khẩu không được bỏ trống" } }}
+                        />
+    
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={errors.repassword ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    placeholder="Nhập lại mật khẩu"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    placeholderTextColor="#fff"
+                                    secureTextEntry
+                                />
+                            )}
+                            name="repassword"
+                            rules={{ required: { value: true, message: "Mật khẩu không được bỏ trống" } }}
+                        />
+    
+    
+                        <Button title="Đăng nhập" onPress={handleSubmit(handleRegister)} style={{ width: '100%' }} />
+                        <Text
+                            onPress={() => navigation.navigate('Login')}
+                            style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
+                            Bạn đã có tài khoản? Đăng nhập ngay
+                        </Text>
+    
+                </ImageBackground>
+                ) : (
+                    <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
+                    <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
+
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={errors.OTP ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    placeholder=""
+                                    value={value}
+                                    onChangeText={onChange}
+                                    placeholderTextColor="#fff"
+                                    keyboardType='numeric'
+                                />
+                            )}
+                            name="OTP"
+                            rules={{
+                                required: { value: true, message: "OTP không được bỏ trống." },
+                                pattern: { value: /^[0-9]{6}$/, message: "OTP không hợp lệ" }
+                            }}
+                        />
+                        <Button title="Tiếp tục" onPress={handleSubmit(handleRegisterOTP)} style={{ width: '100%' }} />
+
+                    </ImageBackground>
+                )
+            }
+           
         </View>
     );
 };
@@ -58,11 +148,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: 'Roboto',
     },
-    actions: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        margin: 10,
-    },
+
     input: {
         borderWidth: 1,
         borderColor: '#ccc',

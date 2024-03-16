@@ -17,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{process.env.EXPO_PUBLIC_APP_NAME}</Text>
+                <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng nhập'}</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Số điện thoại"
