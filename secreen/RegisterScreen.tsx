@@ -27,11 +27,12 @@ const RegisterScreen = ({ navigation }: any) => {
         // }
         setStep1(false);
         setStep2(true);
+        
     };
 
     const handleRegisterOTP = (data: any) => {
         console.log(data);
-        navigation.navigate('RegisterStep2');
+        navigation.navigate('RegisterScreen2');
     }
 
     return (

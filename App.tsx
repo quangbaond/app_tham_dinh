@@ -16,7 +16,7 @@ function App(): React.JSX.Element {
   const [loading, setLoading] = React.useState(false);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='RegisterScreen2' screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName='Login' screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="RegisterScreen2" component={RegisterScreen2} />
