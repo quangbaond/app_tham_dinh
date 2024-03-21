@@ -122,8 +122,6 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                     const result = await ImagePicker.launchCamera({
                                         mediaType: 'photo',
                                         includeBase64: false,
-                                        maxHeight: 200,
-                                        maxWidth: 200,
                                         // tôi muốn tạo 1 chức năng chụp ảnh căn cước công dân, tập trung và focus vào khu vực chứa ảnh trong khung hình
                                         cameraType: 'back',
                                         saveToPhotos: true,
@@ -158,8 +156,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                             const result = await ImagePicker.launchCamera({
                                 mediaType: 'photo',
                                 includeBase64: false,
-                                maxHeight: 200,
-                                maxWidth: 200,
+                                // tôi muốn tạo 1 chức năng chụp ảnh căn cước công dân, tập trung và focus vào khu vực chứa ảnh trong khung hình
                                 cameraType: 'back',
                                 saveToPhotos: true,
                                 includeExtra: true,
@@ -185,6 +182,11 @@ const RegisterScreen2 = ({ navigation }: any) => {
                     </View>
                     <View style={{ marginBottom: 30 }}>
                         <Button disabled={matTruoc && matSau ? false : true} title="Tải lên" onPress={() => handelUpload()} />
+                    </View>
+                    <View style={{ marginBottom: 30 }}>
+                        {/* // hiển thị thông tin */}
+                        <Text style={{ color: '#fff', marginBottom: 10 }}>{kqMatTruoc}</Text>
+                        <Text style={{ color: '#fff', marginBottom: 10 }}>{kqMatSau}</Text>
                     </View>
                 </ScrollView>
             </ImageBackground>
