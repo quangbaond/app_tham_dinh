@@ -1,12 +1,4 @@
 {
-  "expo": {
-    "extra": {
-      "eas": {
-        "projectId": "110ce796-f69c-471f-93b6-8a2237d6b66d"
-      }
-    },
-    "android": {
-      "package": "com.quangbaorp.app"
-    }
-  }
+  "name": "my_app",
+  "displayName": "my_app"
 }
