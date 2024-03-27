@@ -35,7 +35,7 @@ const LoginScreen = ({ navigation }: any) => {
                 />
                     <Button title="Đăng nhập" onPress={handleLogin} />
                     <Text 
-                        onPress={() => navigation.navigate('Register')}
+                        onPress={() => navigation.navigate('Đăng ký')}
                         style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
                         Chưa có tài khoản? Đăng ký ngay
                     </Text>

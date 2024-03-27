@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button } from 'react-native';
 import { useForm, Controller } from "react-hook-form"
+import { storeData } from '../common';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [step1, setStep1] = useState(true);
@@ -19,20 +20,23 @@ const RegisterScreen = ({ navigation }: any) => {
         },
     })
 
-    const handleRegister = (data: any) => {
+    const handleRegister = async (data: any) => {
         console.log(data);
         // if (data.password !== data.repassword) {
         //     Alert.alert('Mật khẩu không khớp');
         //     return;
         // }
+        // save data to local storage
+        await storeData('user', JSON.stringify(data));
         setStep1(false);
         setStep2(true);
         
     };
 
-    const handleRegisterOTP = (data: any) => {
+    const handleRegisterOTP = async (data: any) => {
         console.log(data);
-        navigation.navigate('RegisterScreen2');
+
+        navigation.navigate('Xác thực CMND/CCCD');
     }
 
     return (

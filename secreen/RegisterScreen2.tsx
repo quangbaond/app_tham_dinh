@@ -1,9 +1,10 @@
 // LoginScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform } from 'react-native';
 import { useForm, Controller } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { mergeData, storeData } from '../common';
 
 const RegisterScreen2 = ({ navigation }: any) => {
     const [matTruoc, setMatTruoc] = useState('');
@@ -13,17 +14,43 @@ const RegisterScreen2 = ({ navigation }: any) => {
     const [kqMatTruoc, setKqMatTruoc] = useState('');
     const [kqMatSau, setKqMatSau] = useState('');
 
-    const createFormData = (photo: any) => {
-        const data = new FormData();
+    const data = [
+        {
+            "id": "xxxx",
+            "id_prob": "xxxx",
+            "name": "xxxx",
+            "name_prob": "xxxx",
+            "dob": "xxxx",
+            "dob_prob": "xxxx",
+            "sex": "N/A",
+            "sex_prob": "N/A",
+            "nationality": "N/A",
+            "nationality_prob": "N/A",
+            "home": "xxxx",
+            "home_prob": "xxxx",
+            "address": "xxxx",
+            "address_prob": "xxxx",
+            "address_entities": {
+                "province": "xxxx",
+                "district": "xxxx",
+                "ward": "xxxx",
+                "street": "xxxx"
+            },
+            "doe": "N/A",
+            "doe_prob": "N/A",
+            "type": "xxxx"
+        }
+    ]
 
-        data.append('image', Platform.OS === 'ios' ? photo.replace('file://', '') : photo);
+    useEffect(() => {
+        const saveData = async () => {
+            // merge data to local storage
+            await storeData('userInfo', JSON.stringify(data));
 
-        // Object.keys(body).forEach((key: any) => {
-        //     data.append(key, body[key] as any);
-        // });
-
-        return data;
-    };
+            navigation.navigate('Xác thực thông tin cơ bản');
+        }
+        saveData()
+    }, []);
 
 
 
@@ -52,7 +79,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                     Alert.alert('Ảnh mặt trước thiếu góc, vui lòng chụp lại');
                 } else if (response.errorCode === 7) {
                     Alert.alert('File gửi lên không phải là file ảnh');
-                } else if(response.errorCode === 0) {
+                } else if (response.errorCode === 0) {
                     setKqMatTruoc(JSON.stringify(response.data));
                     let formDataMatSau = new FormData();
                     formDataMatSau.append('image', {
@@ -67,24 +94,24 @@ const RegisterScreen2 = ({ navigation }: any) => {
                             'api_key': 'aFRuM6JZQAVP1NWLidL3gQHQCDR9FbQO',
                         }
                     }).then((response1) => response1.json())
-                    .then((response1) => {
-                        setLoading(false);
-                        console.log('response', response1);
-                        if (response1.errorCode === 3) {
-                            Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
-                        } else if (response1.errorCode === 2) {
-                            Alert.alert('Ảnh mặt sau thiếu góc, vui lòng chụp lại');
-                        } else if (response1.errorCode === 7) {
-                            Alert.alert('File gửi lên không phải là file ảnh');
-                        } else if(response1.errorCode === 0) {
-                            setKqMatSau(JSON.stringify(response1.data));
-                            Alert.alert(JSON.stringify(response.data) + ' ' + JSON.stringify(response1.data));
-                        }
-                    }).catch((error) => {
-                        setLoading(false);
-                        console.log('error', error);
-                        Alert.alert('Upload không thành công');
-                    });
+                        .then((response1) => {
+                            setLoading(false);
+                            console.log('response', response1);
+                            if (response1.errorCode === 3) {
+                                Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
+                            } else if (response1.errorCode === 2) {
+                                Alert.alert('Ảnh mặt sau thiếu góc, vui lòng chụp lại');
+                            } else if (response1.errorCode === 7) {
+                                Alert.alert('File gửi lên không phải là file ảnh');
+                            } else if (response1.errorCode === 0) {
+                                setKqMatSau(JSON.stringify(response1.data));
+                                Alert.alert(JSON.stringify(response.data) + ' ' + JSON.stringify(response1.data));
+                            }
+                        }).catch((error) => {
+                            setLoading(false);
+                            console.log('error', error);
+                            Alert.alert('Upload không thành công');
+                        });
                 }
             })
             .catch((error) => {
