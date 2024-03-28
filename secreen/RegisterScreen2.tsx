@@ -38,7 +38,8 @@ const RegisterScreen2 = ({ navigation }: any) => {
             },
             "doe": "N/A",
             "doe_prob": "N/A",
-            "type": "xxxx"
+            "type": "xxxx",
+            "issue_date": "xxxx",
         }
     ]
 

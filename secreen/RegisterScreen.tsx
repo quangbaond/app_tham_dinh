@@ -96,9 +96,9 @@ const RegisterScreen = ({ navigation }: any) => {
                         />
     
     
-                        <Button title="Đăng nhập" onPress={handleSubmit(handleRegister)}  />
+                        <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)}  />
                         <Text
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('Đăng nhập')}
                             style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
                             Bạn đã có tài khoản? Đăng nhập ngay
                         </Text>
