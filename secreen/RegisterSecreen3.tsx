@@ -64,12 +64,9 @@ const RegisterSecreen3 = ({ navigation }: any) => {
 
     })
 
-
-
     const submit = async (data: any) => {
         console.log(data);
     }
-
 
     return (
         <View>
