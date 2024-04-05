@@ -32,8 +32,8 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
     });
 
     const submit = async (data: any) => {
-        await storeData('taisan', JSON.stringify(data));
-        navigation.navigate('Khoản vay');
+        await storeData('khoanvay', JSON.stringify(data));
+        navigation.navigate('Cá nhân');
     };
 
 
