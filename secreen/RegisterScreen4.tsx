@@ -6,7 +6,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { mergeData, storeData } from '../common';
 
-const RegisterScreen2 = ({ navigation }: any) => {
+const RegisterScreen4 = ({ navigation }: any) => {
     const [matTruoc, setMatTruoc] = useState('');
     const [matSau, setMatSau] = useState('');
     const [image, setImage] = useState('');
@@ -22,33 +22,28 @@ const RegisterScreen2 = ({ navigation }: any) => {
             "name_prob": "xxxx",
             "dob": "xxxx",
             "dob_prob": "xxxx",
-            "sex": "N/A",
-            "sex_prob": "N/A",
-            "nationality": "N/A",
-            "nationality_prob": "N/A",
-            "home": "xxxx",
-            "home_prob": "xxxx",
+            "nation": "xxxx",
+            "nation_prob": "xxxx",
             "address": "xxxx",
             "address_prob": "xxxx",
-            "address_entities": {
-                "province": "xxxx",
-                "district": "xxxx",
-                "ward": "xxxx",
-                "street": "xxxx"
-            },
-            "doe": "N/A",
-            "doe_prob": "N/A",
-            "type": "xxxx",
-            "issue_date": "xxxx",
+            "place_issue": "xxxx",
+            "place_issue_prob": "xxxx",
+            "date": "xxxx",
+            "date_prob": "xxxx",
+            "doe": "xxxx",
+            "doe_prob": "xxxx",
+            "code": "xxxx",
+            "code_prob": "xxxx",
+            "type": "xxxx"
         }
     ]
 
     useEffect(() => {
         const saveData = async () => {
             // merge data to local storage
-            await storeData('userInfo', JSON.stringify(data));
+            await storeData('BLX', JSON.stringify(data));
 
-            navigation.navigate('Xác thực thông tin cơ bản');
+            navigation.navigate('Tài chính');
         }
         saveData()
     }, []);
@@ -66,11 +61,13 @@ const RegisterScreen2 = ({ navigation }: any) => {
 
     //             console.log('data', data);
 
-    //             await storeData('userInfo', JSON.stringify(data));
+    //             // await storeData('userInfo', JSON.stringify(data));
 
-    //             navigation.navigate('Xác thực thông tin cơ bản');
+    //             navigation.navigate('Tài chính');
     //         }
     //         saveData()
+    //     } else {
+    //         Alert.alert('Vui lòng chụp ảnh mặt trước và mặt sau bằng lái xe');
     //     }
     // }, [kqMatTruoc, kqMatSau]);
 
@@ -84,7 +81,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
             type: 'image/jpeg',
             name: 'image.jpg',
         });
-        fetch(`https://api.fpt.ai/vision/idr/vnm/`, {
+        fetch(`https://api.fpt.ai/vision/dlr/vnm/`, {
             method: 'POST',
             body: formData,
             headers: {
@@ -109,7 +106,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         type: 'image/jpeg',
                         name: 'image.jpg',
                     });
-                    fetch(`https://api.fpt.ai/vision/idr/vnm/`, {
+                    fetch(`https://api.fpt.ai/vision/dlr/vnm/`, {
                         method: 'POST',
                         body: formDataMatSau,
                         headers: {
@@ -127,8 +124,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                 Alert.alert('File gửi lên không phải là file ảnh');
                             } else if (response1.errorCode === 0) {
                                 setKqMatSau(JSON.stringify(response1.data));
-                                // Alert.alert(JSON.stringify(response1.data) + ' ' + JSON.stringify(response1.data));
-                                // storeData('userInfo', JSON.stringify(mergeData(data, response.data, response1.data)));
+                                Alert.alert(JSON.stringify(response1.data) + ' ' + JSON.stringify(response1.data));
                             }
                         }).catch((error) => {
                             setLoading(false);
@@ -154,7 +150,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                 <ScrollView style={{ padding: 20 }}>
                     <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
                     <View style={{ marginBottom: 10 }}>
-                        <Button title="Mặt trước CCCD" onPress={async () => {
+                        <Button title="Mặt trước BLX" onPress={async () => {
                             try {
                                 const granted = await PermissionsAndroid.request(
                                     PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -202,7 +198,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         {matTruoc ? <Image source={{ uri: matTruoc }} style={{ height: 250 }} /> : null}
                     </View>
                     <View style={{ marginBottom: 10 }}>
-                        <Button title="Mặt sau CCCD" onPress={async () => {
+                        <Button title="Mặt sau BLX" onPress={async () => {
                             const result = await ImagePicker.launchCamera({
                                 mediaType: 'photo',
                                 includeBase64: false,
@@ -273,4 +269,4 @@ const styles = StyleSheet.create({
 
 
 });
-export default RegisterScreen2;
+export default RegisterScreen4;

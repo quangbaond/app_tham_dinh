@@ -9,6 +9,8 @@ import RegisterScreen2 from './secreen/RegisterScreen2';
 // import Spinner from 'react-native-loading-spinner-overlay';
 import { View } from 'react-native';
 import RegisterSecreen3 from './secreen/RegisterSecreen3';
+import RegisterScreen4 from './secreen/RegisterScreen4';
+import RegisterSecreen5 from './secreen/RegisterSecreen5';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +24,8 @@ function App(): React.JSX.Element {
         <Stack.Screen name="Đăng ký" component={RegisterScreen} />
         <Stack.Screen name="Xác thực CMND/CCCD" component={RegisterScreen2} />
         <Stack.Screen name="Xác thực thông tin cơ bản" component={RegisterSecreen3} />
+        <Stack.Screen name="Xác thực BLX" component={RegisterScreen4} />
+        <Stack.Screen name="Tài chính" component={RegisterSecreen5} />
 
       </Stack.Navigator>
     </NavigationContainer>

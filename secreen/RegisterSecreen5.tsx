@@ -6,7 +6,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
 
-const RegisterSecreen3 = ({ navigation }: any) => {
+const RegisterSecreen5 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('')
 
@@ -454,4 +454,4 @@ const styles = StyleSheet.create({
 
 
 });
-export default RegisterSecreen3;
+export default RegisterSecreen5;
