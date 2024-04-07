@@ -81,7 +81,6 @@ const RegisterSecreen5 = ({ navigation }: any) => {
 
                         {iamges.map((item: any, index: number) => {
                             return (
-
                                 <View style={{ display: 'flex', marginBottom: 10 }}>
                                     {item.uri && (
                                         <>
@@ -232,7 +231,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                                 renderButton={(selectedItem, isOpened) => {
                                                     return (
                                                         <View style={styles.dropdownButtonStyle}>
-                                                            
+
                                                             <Text style={styles.dropdownButtonTxtStyle}>
                                                                 {(selectedItem && selectedItem.title) || 'Chọn chức vụ'}
                                                             </Text>

@@ -22,19 +22,46 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
     const tableData = [
         ['3 tháng', '15,000,000', 'Đã hoàn thành'],
         ['6 tháng', '20,000,000', 'Đã hoàn thành'],
-        ['12 tháng', '25,000,000', 'Đã hoàn thành']
+        ['12 tháng', '25,000,000', 'Đã hoàn thành'],
     ];
+    const tableHeadMonth = ['Thời gian', 'Số tiền'];
+
+    const [tableDataMonth, setTableDataMonth] = useState([
+        ['1 tháng', '5,000,000'],
+        ['2 tháng', '5,000,000'],
+        ['3 tháng', '5,000,000'],
+        ['4 tháng', '5,000,000'],
+        ['5 tháng', '5,000,000'],
+        ['6 tháng', '5,000,000'],
+        ['7 tháng', '5,000,000'],
+        ['8 tháng', '5,000,000'],
+        ['9 tháng', '5,000,000'],
+        ['10 tháng', '5,000,000'],
+        ['11 tháng', '5,000,000'],
+        ['12 tháng', '5,000,000'],
+    ]);
+    const [money, setMoney] = useState(0);
 
     const {
         control, handleSubmit, formState: { errors },
     } = useForm({
-        defaultValues: defaultValuesForm
+        defaultValues: defaultValuesForm,
     });
 
     const submit = async (data: any) => {
         await storeData('khoanvay', JSON.stringify(data));
         navigation.navigate('Cá nhân');
     };
+
+    const onlyMonth = (value: any) => {
+        console.log(value);
+
+        let month = value
+        if (value > 12) {
+            month = value - 12;
+        }
+        return month;
+    }
 
 
 
@@ -66,6 +93,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                             // format currency
                                             const currency = e.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                             onChange(currency);
+                                            setMoney(parseInt(currency.replace(/,/g, '')));
                                         }}
                                         placeholderTextColor="#fff"
                                         placeholder='15,000,000'
@@ -92,10 +120,96 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                         }, {
                                             title: '12 tháng',
                                             value: 12
-                                        }]}
+                                        },
+                                        {
+                                            title: '24 tháng',
+                                            value: 24
+                                        },
+                                        {
+                                            title: '36 tháng',
+                                            value: 36
+                                        },
+                                        {
+                                            title: '48 tháng',
+                                            value: 48
+                                        },
+                                        {
+                                            title: '60 tháng',
+                                            value: 60
+                                        },
+                                        {
+                                            title: '72 tháng',
+                                            value: 72
+                                        },
+                                        {
+                                            title: '84 tháng',
+                                            value: 84
+                                        },
+                                        {
+                                            title: '96 tháng',
+                                            value: 96
+                                        },
+                                        {
+                                            title: '108 tháng',
+                                            value: 108
+                                        },
+                                        {
+                                            title: '120 tháng',
+                                            value: 120
+                                        },
+                                        ]}
                                         onSelect={(selectedItem) => {
                                             // handle selected item
                                             console.log(selectedItem);
+                                            const { value } = selectedItem;
+                                            console.log(value);
+                                            let data = [] as any;
+
+
+                                            if (money > 0) {
+                                                // tiền trả moi tháng sẽ được chia đều và cộng thêm 12% lãi suất và trừ đi gốc
+
+                                                // vay 3 tỷ trong 12 tháng thì mỗi tháng tiền gốc sẽ tr
+
+                                                const monthNow = new Date().getMonth() + 1;
+                                                let remainingMoney = money;
+
+                                                // const data = Array.from({ length: value }, (v, k) => {
+                                                //     let month = monthNow + 1;
+                                                //     if (month > 12) {
+                                                //         month = month - 12;
+                                                //     }
+                                                //     const moneyMonth = remainingMoney / value + remainingMoney * 0.12;
+
+                                                //     const currency = moneyMonth.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                                //     // tiền gốc sẽ giảm 8.33% mỗi tháng
+                                                //     remainingMoney -= money / value;
+                                                //     return [`tháng ${month} `, `${currency}`];
+                                                // });
+                                                let month = monthNow;
+
+                                                for (let i = 0; i < value; i++) {
+                                                    month++;
+
+                                                    if (month > 12) {
+                                                        month = month - 12;
+                                                    }
+                                                    // chỉ lấy 12 tháng
+
+
+                                                    const moneyMonth = remainingMoney / value + remainingMoney * 0.12;
+
+                                                    const currency = moneyMonth.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                                    data.push([`tháng ${month} `, `${currency}`]);
+
+                                                    // tiền gốc sẽ giảm 8.33% mỗi tháng
+                                                    remainingMoney -= 2500000;
+
+                                                }
+                                                setTableDataMonth(data);
+                                            }
 
                                         }}
                                         renderButton={(selectedItem, isOpened) => {
@@ -107,7 +221,6 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                                     <Text style={styles.dropdownButtonTxtStyle}>
                                                         {(selectedItem && selectedItem.title) || 'Chọn thời hạn vay'}
                                                     </Text>
-                                                    {/* <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} /> */}
                                                 </View>
                                             );
                                         }}
@@ -124,6 +237,15 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
 
                             )}
                             name="thoi_han_vay" />
+
+                        <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20, marginTop: 20 }}>{'Lịch trả nợ'}</Text>
+
+                        <View>
+                            <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+                                <Row data={tableHeadMonth} style={styles.head} textStyle={styles.text} />
+                                <Rows data={tableDataMonth} textStyle={styles.text} />
+                            </Table>
+                        </View>
 
                         <View style={{
                             borderBottomColor: 'white',
@@ -233,6 +355,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
 
-    head: { height: 40, backgroundColor: 'blue', textAlign: 'center'},
-    text: { margin: 6, color: '#fff'}
+    head: { height: 40, backgroundColor: 'blue', textAlign: 'center' },
+    text: { margin: 6, color: '#fff' }
 });
