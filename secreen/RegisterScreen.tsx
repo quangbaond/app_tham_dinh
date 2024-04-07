@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button } from 'react-native';
 import { useForm, Controller } from "react-hook-form"
 import { storeData } from '../common';
+import axios from '../common/axios';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [step1, setStep1] = useState(true);
@@ -13,24 +14,36 @@ const RegisterScreen = ({ navigation }: any) => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            phoneNumber: "",
+            phone: "",
             password: "",
-            repassword: "",
+            password_confirmation: "",
             OTP: "",
         },
     })
 
     const handleRegister = async (data: any) => {
-        console.log(data);
-        // if (data.password !== data.repassword) {
-        //     Alert.alert('Mật khẩu không khớp');
-        //     return;
-        // }
-        // save data to local storage
         await storeData('user', JSON.stringify(data));
-        setStep1(false);
-        setStep2(true);
+        console.log('https://tp.tucanhcomputer.vn/api/auth/register');
+        console.log(data);
         
+        axios.post('https://tp.tucanhcomputer.vn/api/auth/register', {
+            phone: data.phone,
+            password: data.password,
+            password_confirmation: data.password_confirmation
+        }).then((res) => {
+            console.log(res.data);
+            
+            Alert.alert('Thành công', 'Đăng ký thành công, vui lòng nhập mã OTP để tiếp tục.')
+            setStep1(false);
+            setStep2(true);
+        }).catch((err) => {
+            if(err.response.data.errors.phone){
+                Alert.alert('Lỗi', err.response.data.errors.phone[0]);
+            }
+            if(err.response.data.errors.password){
+                Alert.alert('Lỗi', err.response.data.errors.password[0]);
+            }
+        });
     };
 
     const handleRegisterOTP = async (data: any) => {
@@ -44,12 +57,12 @@ const RegisterScreen = ({ navigation }: any) => {
             {
                 step1 ? (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                    <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
+                        <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
-                                    style={errors.phoneNumber ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    style={errors.phone ? [styles.input, { borderColor: 'red' }] : styles.input}
                                     placeholder="Số điện thoại"
                                     value={value}
                                     onChangeText={onChange}
@@ -57,7 +70,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     keyboardType='numeric'
                                 />
                             )}
-                            name="phoneNumber"
+                            name="phone"
                             rules={{
                                 required: { value: true, message: "Số điện thoại không được bỏ trống" },
                                 pattern: { value: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" }
@@ -78,12 +91,12 @@ const RegisterScreen = ({ navigation }: any) => {
                             name="password"
                             rules={{ required: { value: true, message: "Mật khẩu không được bỏ trống" } }}
                         />
-    
+
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
-                                    style={errors.repassword ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                    style={errors.password_confirmation ? [styles.input, { borderColor: 'red' }] : styles.input}
                                     placeholder="Nhập lại mật khẩu"
                                     value={value}
                                     onChangeText={onChange}
@@ -91,29 +104,29 @@ const RegisterScreen = ({ navigation }: any) => {
                                     secureTextEntry
                                 />
                             )}
-                            name="repassword"
+                            name="password_confirmation"
                             rules={{ required: { value: true, message: "Mật khẩu không được bỏ trống" } }}
                         />
-    
-    
-                        <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)}  />
+
+
+                        <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)} />
                         <Text
                             onPress={() => navigation.navigate('Đăng nhập')}
                             style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
                             Bạn đã có tài khoản? Đăng nhập ngay
                         </Text>
-    
-                </ImageBackground>
+
+                    </ImageBackground>
                 ) : (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                    <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
+                        <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
 
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
                                     style={errors.OTP ? [styles.input, { borderColor: 'red' }] : styles.input}
-                                    placeholder=""
+                                    placeholder="Otp"
                                     value={value}
                                     onChangeText={onChange}
                                     placeholderTextColor="#fff"
@@ -131,7 +144,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     </ImageBackground>
                 )
             }
-           
+
         </View>
     );
 };
