@@ -25,22 +25,22 @@ const RegisterScreen = ({ navigation }: any) => {
         await storeData('user', JSON.stringify(data));
         console.log('https://tp.tucanhcomputer.vn/api/auth/register');
         console.log(data);
-        
+
         axios.post('https://tp.tucanhcomputer.vn/api/auth/register', {
             phone: data.phone,
             password: data.password,
             password_confirmation: data.password_confirmation
         }).then((res) => {
             console.log(res.data);
-            
+
             Alert.alert('Thành công', 'Đăng ký thành công, vui lòng nhập mã OTP để tiếp tục.')
             setStep1(false);
             setStep2(true);
         }).catch((err) => {
-            if(err.response.data.errors.phone){
+            if (err.response.data.errors.phone) {
                 Alert.alert('Lỗi', err.response.data.errors.phone[0]);
             }
-            if(err.response.data.errors.password){
+            if (err.response.data.errors.password) {
                 Alert.alert('Lỗi', err.response.data.errors.password[0]);
             }
         });
@@ -73,7 +73,8 @@ const RegisterScreen = ({ navigation }: any) => {
                             name="phone"
                             rules={{
                                 required: { value: true, message: "Số điện thoại không được bỏ trống" },
-                                pattern: { value: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" }
+                                // validate 0901.888.484
+                                pattern: { value: /^[0-9]{10,11}$/, message: "Số điện thoại không hợp lệ" }
                             }}
                         />
                         <Controller

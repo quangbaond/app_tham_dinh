@@ -119,6 +119,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         .then((response1) => {
                             setLoading(false);
                             console.log('response', response1);
+
                             if (response1.errorCode === 3) {
                                 Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
                             } else if (response1.errorCode === 2) {
@@ -127,8 +128,6 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                 Alert.alert('File gửi lên không phải là file ảnh');
                             } else if (response1.errorCode === 0) {
                                 setKqMatSau(JSON.stringify(response1.data));
-                                // Alert.alert(JSON.stringify(response1.data) + ' ' + JSON.stringify(response1.data));
-                                // storeData('userInfo', JSON.stringify(mergeData(data, response.data, response1.data)));
                             }
                         }).catch((error) => {
                             setLoading(false);
