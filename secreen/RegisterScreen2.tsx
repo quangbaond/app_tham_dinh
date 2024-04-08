@@ -84,6 +84,10 @@ const RegisterScreen2 = ({ navigation }: any) => {
             type: 'image/jpeg',
             name: 'image.jpg',
         });
+        const formDataApi = new FormData();
+        formDataApi.append('mattruoc', Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matTruoc);
+        formDataApi.append('matsau', Platform.OS === 'ios' ? matSau.replace('file://', '') : matSau);
+        
         fetch(`https://api.fpt.ai/vision/idr/vnm/`, {
             method: 'POST',
             body: formData,
@@ -117,9 +121,6 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         }
                     }).then((response1) => response1.json())
                         .then((response1) => {
-                            setLoading(false);
-                            console.log('response', response1);
-
                             if (response1.errorCode === 3) {
                                 Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
                             } else if (response1.errorCode === 2) {
@@ -127,7 +128,19 @@ const RegisterScreen2 = ({ navigation }: any) => {
                             } else if (response1.errorCode === 7) {
                                 Alert.alert('File gửi lên không phải là file ảnh');
                             } else if (response1.errorCode === 0) {
-                                setKqMatSau(JSON.stringify(response1.data));
+                                fetch(process.env.REACT_APP_API_URL + '/upload-cccd', {
+                                    method: 'POST',
+                                    body: formDataApi,
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                    }
+                                }).then((res) => res.json()).then((res) => {
+                                    setLoading(false);
+                                    setKqMatSau(JSON.stringify(response1.data));
+                                }).catch((error) => {
+                                    setLoading(false);
+                                    console.log('error', error);
+                                });
                             }
                         }).catch((error) => {
                             setLoading(false);
