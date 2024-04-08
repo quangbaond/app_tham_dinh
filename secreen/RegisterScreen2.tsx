@@ -4,7 +4,7 @@ import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, Perm
 import { useForm, Controller } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { mergeData, storeData } from '../common';
+import { getData, mergeData, storeData } from '../common';
 
 const RegisterScreen2 = ({ navigation }: any) => {
     const [matTruoc, setMatTruoc] = useState('');
@@ -45,34 +45,37 @@ const RegisterScreen2 = ({ navigation }: any) => {
 
     useEffect(() => {
         const saveData = async () => {
-            // merge data to local storage
-            await storeData('userInfo', JSON.stringify(data));
-
-            navigation.navigate('Xác thực thông tin cơ bản');
+            const userInfo = await getData('userInfo');
+            if(!userInfo) {
+                await storeData('userInfo', JSON.stringify(data));
+                navigation.navigate('Xác thực thông tin cơ bản');
+            } else {
+                navigation.navigate('Trang cá nhân');
+            }
         }
         saveData()
     }, []);
 
-    // useEffect(() => {
-    //     // console.log('matTruoc', matTruoc);
-    //     // console.log('matSau', matSau);
-    //     if (kqMatTruoc && kqMatSau) {
-    //         const saveData = async () => {
-    //             // merge data to local storage
-    //             const data = [{
-    //                 ...JSON.parse(kqMatTruoc)[0],
-    //                 ...JSON.parse(kqMatSau)[0]
-    //             }]
+    useEffect(() => {
+        // console.log('matTruoc', matTruoc);
+        // console.log('matSau', matSau);
+        if (kqMatTruoc && kqMatSau) {
+            const saveData = async () => {
+                // merge data to local storage
+                const data = [{
+                    ...JSON.parse(kqMatTruoc)[0],
+                    ...JSON.parse(kqMatSau)[0]
+                }]
 
-    //             console.log('data', data);
+                console.log('data', data);
 
-    //             await storeData('userInfo', JSON.stringify(data));
+                await storeData('userInfo', JSON.stringify(data));
 
-    //             navigation.navigate('Xác thực thông tin cơ bản');
-    //         }
-    //         saveData()
-    //     }
-    // }, [kqMatTruoc, kqMatSau]);
+                navigation.navigate('Xác thực thông tin cơ bản');
+            }
+            saveData()
+        }
+    }, [kqMatTruoc, kqMatSau]);
 
 
 

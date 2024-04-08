@@ -5,6 +5,8 @@ import { useForm, Controller } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
+import SelectDropdown from 'react-native-select-dropdown';
+import axios from 'axios';
 
 const RegisterSecreen3 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -16,10 +18,10 @@ const RegisterSecreen3 = ({ navigation }: any) => {
         cccd: "",
         address: "",
         address_now: "",
-        date_of_birth: "",
-        date_of_issue: "",
+        birthday: "",
+        issue_date: "",
         msbhxh: "",
-        licence: "",
+        nationality: "Việt Nam",
         facebook: "",
         zalo: "",
         phone_number_reference: [
@@ -30,6 +32,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                 relationship: "",
             }
         ],
+        religion: "Không",
     });
 
     const {
@@ -52,8 +55,10 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                         cccd: dataUser.id,
                         address: dataUser.address,
                         address_now: dataUser.address_now,
-                        date_of_birth: dataUser.dob,
-                        date_of_issue: dataUser.issue_date,
+                        birthday: dataUser.dob,
+                        issue_date: dataUser.issue_date,
+                        doe: dataUser.doe,
+                        religion: dataUser.religion,
                     }
                 }
             }
@@ -62,8 +67,38 @@ const RegisterSecreen3 = ({ navigation }: any) => {
     })
 
     const submit = async (data: any) => {
-        await storeData('userInfo', JSON.stringify(data));
-        navigation.navigate('Xác thực BLX');
+        
+        setLoading(true);
+
+        fetch(process.env.REACT_APP_API_URL + '/api/update-user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...defaultValuesForm,
+                ...data
+            }),
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                setLoading(false);
+                storeData('userInfo', JSON.stringify({
+                    ...defaultValuesForm,
+                    ...data
+                })).then(() => {
+                    navigation.navigate('Xác thực BLX');
+                });
+            })
+            .catch((error) => {
+                // if (error.response.data.errors.name) {
+                //     // Alert.alert('Lỗi', error.response.data.errors.phone[0]);
+                //     Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
+                // }
+                setLoading(false);
+                Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
+            }); 
     }
 
     return (
@@ -180,7 +215,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                 <>
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Ngày sinh'}</Text>
                                     <TextInput
-                                        style={errors.date_of_birth ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
+                                        style={errors.birthday ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Ngày sinh"
                                         value={value}
                                         onChangeText={onChange}
@@ -191,7 +226,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                 </>
 
                             )}
-                            name="date_of_birth"
+                            name="birthday"
                         />
 
                         <Controller
@@ -200,7 +235,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                 <>
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Ngày cấp'}</Text>
                                     <TextInput
-                                        style={errors.date_of_issue ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
+                                        style={errors.issue_date ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
@@ -210,7 +245,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                 </>
 
                             )}
-                            name="date_of_issue"
+                            name="issue_date"
                         />
 
                         <Controller
@@ -290,15 +325,53 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
-                                            <TextInput
-                                                style={errors.phone_number_reference?.[index]?.relationship ? [styles.input, { borderColor: 'red' }] : styles.input}
-                                                placeholder="Mẹ - Bố - Anh - Chị - Em"
-                                                value={value as string} // Cast value to string
-                                                onChangeText={onChange}
-                                                placeholderTextColor="#fff"
-                                                defaultValue={item.relationship}
-                                                editable={true}
-                                                keyboardType='default'
+                                            <SelectDropdown
+                                                data={[{
+                                                    title: 'Mẹ',
+                                                    value: 'Mẹ'
+                                                }, {
+                                                    title: 'Bố',
+                                                    value: 'Bố'
+                                                },
+                                                {
+                                                    title: 'Anh trai',
+                                                    value: 'Anh trai'
+                                                },
+                                                {
+                                                    title: 'Em trai',
+                                                    value: 'Em trai'
+                                                },
+                                                {
+                                                    title: 'Chị gái',
+                                                    value: 'Chị gái'
+                                                },
+                                                {
+                                                    title: 'Em gái',
+                                                    value: 'Em gái'
+                                                }
+                                                ]}
+                                                onSelect={(selectedItem) => {
+                                                    // handle selected item
+                                                    onChange(selectedItem.value)
+
+                                                }}
+                                                renderButton={(selectedItem, isOpened) => {
+                                                    return (
+                                                        <View style={styles.dropdownButtonStyle}>
+
+                                                            <Text style={styles.dropdownButtonTxtStyle}>
+                                                                {(selectedItem && selectedItem.title) || 'Chọn mối quan hệ'}
+                                                            </Text>
+                                                        </View>
+                                                    );
+                                                }}
+                                                renderItem={(item, index, isSelected) => {
+                                                    return (
+                                                        <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                                                            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                                                        </View>
+                                                    );
+                                                }}
                                             />
                                         )}
                                         name={`phone_number_reference.${index}.relationship`}
@@ -450,6 +523,52 @@ const styles = StyleSheet.create({
     // input disabled
     inputDisabled: {
         backgroundColor: 'rgba(255,255,255,0.4)',
+    },
+    dropdownButtonStyle: {
+        height: 40,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        color: 'white',
+        borderRadius: 7,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        borderWidth: 1,
+        borderColor: 'white',
+    },
+    dropdownButtonTxtStyle: {
+        flex: 1,
+        fontSize: 16,
+        color: 'white',
+    },
+    dropdownButtonArrowStyle: {
+        fontSize: 28,
+    },
+    dropdownButtonIconStyle: {
+        fontSize: 28,
+        marginRight: 3,
+    },
+    dropdownMenuStyle: {
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 8,
+    },
+    dropdownItemStyle: {
+        width: '100%',
+        flexDirection: 'row',
+        paddingHorizontal: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    dropdownItemTxtStyle: {
+        flex: 1,
+        fontSize: 18,
+        fontWeight: '500',
+        color: '#151E26',
+    },
+    dropdownItemIconStyle: {
+        fontSize: 28,
+        marginRight: 8,
     },
 
 

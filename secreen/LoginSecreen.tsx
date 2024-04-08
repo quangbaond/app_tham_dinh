@@ -1,17 +1,36 @@
 // LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Button } from 'react-native';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert } from 'react-native';
+import { storeData } from '../common';
 
 
 const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Logic kiểm tra đăng nhập ở đây
-        if (username === 'admin' && password === 'admin') {
-            navigation.navigate('Main');
-        }
+    const handleLogin = async () => {
+        fetch('https://tp.tucanhcomputer.vn/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                phone: username,
+                password: password,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                storeData('login', JSON.stringify({
+                    token: data.token,
+                    user: data.user,
+                }));
+                Alert.alert('Thành công', 'Đăng nhập thành công');
+                navigation.navigate('Trang cá nhân');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            })
     };
 
     return (

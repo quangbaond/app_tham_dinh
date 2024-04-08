@@ -49,7 +49,8 @@ const RegisterScreen = ({ navigation }: any) => {
     const handleRegisterOTP = async (data: any) => {
         console.log(data);
 
-        navigation.navigate('Xác thực CMND/CCCD');
+        // navigation.navigate('Xác thực CMND/CCCD');
+        navigation.navigate('Đăng nhập');
     }
 
     return (
