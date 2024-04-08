@@ -21,12 +21,13 @@ const LoginScreen = ({ navigation }: any) => {
         })
             .then((response) => response.json())
             .then((data) => {
-                storeData('login', JSON.stringify({
-                    token: data.token,
+                storeData('userLogin', JSON.stringify({
+                    token: data.access_token,
                     user: data.user,
                 }));
-                Alert.alert('Thành công', 'Đăng nhập thành công');
-                navigation.navigate('Trang cá nhân');
+                console.log(data.token);
+                // Alert.alert('Thành công', 'Đăng nhập thành công');
+                // navigation.navigate('Trang cá nhân');
             })
             .catch((error) => {
                 console.error('Error:', error);
