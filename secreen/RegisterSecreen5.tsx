@@ -17,7 +17,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
         thu_nhap_hang_thang: "",
         ten_cong_ty: "",
         dia_chi_cong_ty: "",
-        So_dien_thoai_cong_ty: "",
+        so_dien_thoai_cong_ty: "",
         sao_ke_nhan_luong: "",
         so_dien_thoai_noi_lam_viec: [
             {

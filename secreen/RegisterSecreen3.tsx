@@ -50,6 +50,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                 return {
                     ...defaultValuesForm,
                     ...{
+                        id_card: dataUser?.id,
                         name: dataUser?.name,
                         phone_number: JSON.parse(dataPhone as string).phoneNumber,
                         cccd: dataUser.id,
@@ -67,7 +68,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
     })
 
     const submit = async (data: any) => {
-        
+
         setLoading(true);
 
         fetch(process.env.REACT_APP_API_URL + '/api/update-user', {
@@ -98,7 +99,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                 // }
                 setLoading(false);
                 Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
-            }); 
+            });
     }
 
     return (
