@@ -8,12 +8,12 @@ import RegisterScreen from './secreen/RegisterScreen';
 import RegisterScreen2 from './secreen/RegisterScreen2';
 // import Spinner from 'react-native-loading-spinner-overlay';
 import { View } from 'react-native';
-import RegisterSecreen3 from './secreen/RegisterSecreen3';
 import RegisterScreen4 from './secreen/RegisterScreen4';
 import RegisterSecreen5 from './secreen/RegisterSecreen5';
 import RegisterSecreen6 from './secreen/RegisterSecreen6';
 import { RegisterSecreen7 } from './secreen/RegisterSecreen7';
 import HomeSecreen from './secreen/HomeSecreen';
+import { RegisterSecreen3 } from './secreen/RegisterSecreen3';
 
 const Stack = createNativeStackNavigator();
 

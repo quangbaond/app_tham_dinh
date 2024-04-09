@@ -21,16 +21,23 @@ const LoginScreen = ({ navigation }: any) => {
         })
             .then((response) => response.json())
             .then((data) => {
+                if(data.error) {
+                    Alert.alert('Lỗi', data.error);
+                    return;
+                }
+                
                 storeData('userLogin', JSON.stringify({
                     token: data.access_token,
                     user: data.user,
                 }));
-                console.log(data.token);
-                // Alert.alert('Thành công', 'Đăng nhập thành công');
-                // navigation.navigate('Trang cá nhân');
+                
+                Alert.alert('Thành công', 'Đăng nhập thành công');
+                navigation.navigate('Trang cá nhân');
             })
             .catch((error) => {
-                console.error('Error:', error);
+                if(error) {
+                    Alert.alert('Lỗi', 'Đăng nhập thất bại');
+                }
             })
     };
 

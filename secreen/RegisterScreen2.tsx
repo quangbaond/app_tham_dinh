@@ -1,7 +1,7 @@
 // LoginScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform } from 'react-native';
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, set } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
@@ -13,6 +13,8 @@ const RegisterScreen2 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [kqMatTruoc, setKqMatTruoc] = useState('');
     const [kqMatSau, setKqMatSau] = useState('');
+    const [next, setNext] = useState(false);
+    const [userLogin, setUserLogin] = useState<any>(null);
 
     const data = [
         {
@@ -41,123 +43,99 @@ const RegisterScreen2 = ({ navigation }: any) => {
             "type": "xxxx",
             "issue_date": "xxxx",
         }
-    ]
+    ];
 
     useEffect(() => {
         const saveData = async () => {
             const userInfo = await getData('userInfo');
-            if(!userInfo) {
+            const userData = await getData('userLogin');
+            if (!userLogin) {
+                Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+                navigation.navigate('Đăng nhập');
+                return;
+            }
+
+            setUserLogin(JSON.parse(userData as string));
+            if (!userInfo) {
                 await storeData('userInfo', JSON.stringify(data));
                 navigation.navigate('Xác thực thông tin cơ bản');
             } else {
-                navigation.navigate('Trang cá nhân');
+                navigation.navigate('Xác thực thông tin cơ bản');
             }
         }
         saveData()
     }, []);
 
     useEffect(() => {
-        // console.log('matTruoc', matTruoc);
-        // console.log('matSau', matSau);
+        if (matTruoc) {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('image_front', Platform.OS === 'ios' ? image.replace('file://', '') : image);
+
+            fetch('https://tp.tucanhcomputer.vn/api/upload-cccd', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userLogin.token}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    setKqMatTruoc(data.data);
+                    setLoading(false);
+                    Alert.alert('Thông báo', 'Tải ảnh thành công');
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    console.log(error);
+                    if(error.message === 'Network request failed') {
+                        Alert.alert('Thông báo', 'Không thể kết nối đến máy chủ');
+                    } else {
+                        Alert.alert('Thông báo', 'Có lỗi xảy ra');
+                    }
+                });
+        }
+    }, [matTruoc]);
+
+    useEffect(() => {
+        if (matSau) {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('image_back', Platform.OS === 'ios' ? image.replace('file://', '') : image);
+
+            fetch('https://tp.tucanhcomputer.vn/api/upload-cccd', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userLogin.token}`,
+                },
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    setKqMatSau(data.data);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    console.log(error);
+                    if(error.message === 'Network request failed') {
+                        Alert.alert('Thông báo', 'Không thể kết nối đến máy chủ');
+                    } else {
+                        Alert.alert('Thông báo', 'Có lỗi xảy ra');
+                    }
+                });
+        }
+    }, [matSau]);
+
+    useEffect(() => {
         if (kqMatTruoc && kqMatSau) {
-            const saveData = async () => {
-                // merge data to local storage
-                const data = [{
-                    ...JSON.parse(kqMatTruoc)[0],
-                    ...JSON.parse(kqMatSau)[0]
-                }]
-
-                console.log('data', data);
-
-                await storeData('userInfo', JSON.stringify(data));
-
-                navigation.navigate('Xác thực thông tin cơ bản');
-            }
-            saveData()
+            setNext(true);
         }
     }, [kqMatTruoc, kqMatSau]);
-
-
-
-    const handelUpload = async () => {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('image', {
-            uri: Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matTruoc,
-            type: 'image/jpeg',
-            name: 'image.jpg',
-        });
-        const formDataApi = new FormData();
-        formDataApi.append('mattruoc', Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matTruoc);
-        formDataApi.append('matsau', Platform.OS === 'ios' ? matSau.replace('file://', '') : matSau);
-        
-        fetch(`https://api.fpt.ai/vision/idr/vnm/`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'api_key': 'aFRuM6JZQAVP1NWLidL3gQHQCDR9FbQO',
-            }
-        })
-            .then((response) => response.json())
-            .then((response) => {
-                setLoading(false);
-                console.log('response', response);
-                if (response.errorCode === 3) {
-                    Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
-                } else if (response.errorCode === 2) {
-                    Alert.alert('Ảnh mặt trước thiếu góc, vui lòng chụp lại');
-                } else if (response.errorCode === 7) {
-                    Alert.alert('File gửi lên không phải là file ảnh');
-                } else if (response.errorCode === 0) {
-                    setKqMatTruoc(JSON.stringify(response.data));
-                    let formDataMatSau = new FormData();
-                    formDataMatSau.append('image', {
-                        uri: Platform.OS === 'ios' ? matSau.replace('file://', '') : matSau,
-                        type: 'image/jpeg',
-                        name: 'image.jpg',
-                    });
-                    fetch(`https://api.fpt.ai/vision/idr/vnm/`, {
-                        method: 'POST',
-                        body: formDataMatSau,
-                        headers: {
-                            'api_key': 'aFRuM6JZQAVP1NWLidL3gQHQCDR9FbQO',
-                        }
-                    }).then((response1) => response1.json())
-                        .then((response1) => {
-                            if (response1.errorCode === 3) {
-                                Alert.alert('Ảnh chụp không rõ, vui lòng chụp lại');
-                            } else if (response1.errorCode === 2) {
-                                Alert.alert('Ảnh mặt sau thiếu góc, vui lòng chụp lại');
-                            } else if (response1.errorCode === 7) {
-                                Alert.alert('File gửi lên không phải là file ảnh');
-                            } else if (response1.errorCode === 0) {
-                                fetch(process.env.REACT_APP_API_URL + '/upload-cccd', {
-                                    method: 'POST',
-                                    body: formDataApi,
-                                    headers: {
-                                        'Content-Type': 'multipart/form-data',
-                                    }
-                                }).then((res) => res.json()).then((res) => {
-                                    setLoading(false);
-                                    setKqMatSau(JSON.stringify(response1.data));
-                                }).catch((error) => {
-                                    setLoading(false);
-                                    console.log('error', error);
-                                });
-                            }
-                        }).catch((error) => {
-                            setLoading(false);
-                            console.log('error', error);
-                            Alert.alert('Upload không thành công');
-                        });
-                }
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.log('error', error);
-                Alert.alert('Upload không thành công');
-            });
-    };
 
     return (
         <View >
@@ -182,12 +160,10 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                     }
                                 );
                                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                    console.log("You can use the camera");
                                     // lunch camera
-                                    const result = await ImagePicker.launchCamera({
+                                    await ImagePicker.launchCamera({
                                         mediaType: 'photo',
                                         includeBase64: false,
-
                                         cameraType: 'back',
                                         saveToPhotos: true,
                                         includeExtra: true,
@@ -207,11 +183,11 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                     });
                                 } else {
                                     console.log("Camera permission denied");
-                                    Alert.alert('Không thể mở camera');
+                                    Alert.alert('Thông báo','Không thể mở camera');
                                 }
                             } catch (err) {
-                                console.warn('Thiết bị không hỗ trợ camera');
-                                Alert.alert('Thiết bị không hỗ trợ camera');
+                                console.warn('Thông báo', 'Thiết bị không hỗ trợ camera');
+                                Alert.alert('Thông báo', 'Thiết bị không hỗ trợ camera');
                             }
                         }} />
                         {matTruoc ? <Image source={{ uri: matTruoc }} style={{ height: 250 }} /> : null}
@@ -246,7 +222,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         {matSau ? <Image source={{ uri: matSau }} style={{ height: 250 }} /> : null}
                     </View>
                     <View style={{ marginBottom: 30 }}>
-                        <Button disabled={matTruoc && matSau ? false : true} title="Tải lên" onPress={() => handelUpload()} />
+                        <Button disabled={!next} title="Tải lên" onPress={() => navigation.navigate('Xác thực thông tin cơ bản') } />
                     </View>
                     <View style={{ marginBottom: 30 }}>
                         {/* // hiển thị thông tin */}

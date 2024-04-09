@@ -1,106 +1,98 @@
-// LoginScreen.js
-import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform } from 'react-native';
-import { useForm, Controller } from "react-hook-form"
-import * as ImagePicker from 'react-native-image-picker';
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, ScrollView } from 'react-native';
+import { useForm, Controller } from "react-hook-form";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { getData, mergeData, storeData } from '../common';
+import { getData, storeData } from '../common';
 import SelectDropdown from 'react-native-select-dropdown';
-import axios from 'axios';
 
-const RegisterSecreen3 = ({ navigation }: any) => {
+export const RegisterSecreen3 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     const [defaultValuesForm, setDefaultValues] = useState({
         name: "",
-        phone_number: "",
+        phone: "",
         cccd: "",
         address: "",
         address_now: "",
         birthday: "",
         issue_date: "",
         msbhxh: "",
-        nationality: "Việt Nam",
+        nationality: "",
         facebook: "",
         zalo: "",
-        phone_number_reference: [
+        religion: "",
+        phone_reference: [
             {
-                id: 1,
+                relationship: "",
                 name: "",
                 phone: "",
-                relationship: "",
             }
-        ],
-        religion: "Không",
+        ]
     });
 
+
     const {
-        control,
-        handleSubmit,
-        formState: { errors },
+        control, handleSubmit, formState: { errors },
     } = useForm({
         defaultValues: async () => {
-            const data = await getData('userInfo');
-            const dataPhone = await getData('user')
-            if (data) {
-                const dataUser = JSON.parse(data)[0];
-                console.log(dataUser.name);
 
-                return {
-                    ...defaultValuesForm,
-                    ...{
-                        id_card: dataUser?.id,
-                        name: dataUser?.name,
-                        phone_number: JSON.parse(dataPhone as string).phoneNumber,
-                        cccd: dataUser.id,
-                        address: dataUser.address,
-                        address_now: dataUser.address_now,
-                        birthday: dataUser.dob,
-                        issue_date: dataUser.issue_date,
-                        doe: dataUser.doe,
-                        religion: dataUser.religion,
-                    }
+            const userLogin = await getData('userLogin');
+            const token = JSON.parse(userLogin ?? '').token;
+            const result = await fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
                 }
-            }
-        }
+            }).then((response) => response.json())
 
-    })
+            return {
+                ...defaultValuesForm,
+                phone: result.phone,
+                ...result?.userIdentifications,
+                phone_reference: result?.userPhoneReferences,
+            };
+        }
+    });
 
     const submit = async (data: any) => {
 
         setLoading(true);
-
-        fetch(process.env.REACT_APP_API_URL + '/api/update-user', {
+        console.log(data);
+        
+        const userLogin = await getData('userLogin');
+        const token = JSON.parse(userLogin ?? '').token;
+        fetch('https://tp.tucanhcomputer.vn/api/update-user', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                ...defaultValuesForm,
-                ...data
-            }),
+            body: JSON.stringify(data),
         })
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson);
+                
                 setLoading(false);
-                storeData('userInfo', JSON.stringify({
-                    ...defaultValuesForm,
-                    ...data
-                })).then(() => {
-                    navigation.navigate('Xác thực BLX');
-                });
+                if(responseJson.error) {
+                    Alert.alert('Lỗi', responseJson.error);
+                    return;
+                }
+
+                navigation.navigate('Trang cá nhân');
+
+                // storeData('userLogin', JSON.stringify({
+                //     token: token,
+                //     ...responseJson,
+                // }));
             })
             .catch((error) => {
-                // if (error.response.data.errors.name) {
-                //     // Alert.alert('Lỗi', error.response.data.errors.phone[0]);
-                //     Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
-                // }
                 setLoading(false);
+                console.log(error);
                 Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
             });
-    }
+    };
 
     return (
         <View>
@@ -122,13 +114,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
-                                        editable={false}
-                                        returnKeyLabel="Họ và tên"
-                                    />
+                                        editable={true}
+                                        returnKeyLabel="next" />
                                 </>
                             )}
-                            name="name"
-                        />
+                            name="name" />
 
                         <Controller
                             control={control}
@@ -136,19 +126,17 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                 <>
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số điện thoại'}</Text>
                                     <TextInput
-                                        style={errors.phone_number ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
+                                        style={errors.phone ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Số điện thoại"
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
                                         keyboardType='numeric'
-                                        editable={false}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="phone_number"
-                        />
+                            name="phone" />
 
                         <Controller
                             control={control}
@@ -162,13 +150,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
                                         keyboardType='numeric'
-                                        editable={false}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="cccd"
-                        />
+                            name="cccd" />
 
                         <Controller
                             control={control}
@@ -181,13 +167,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
-                                        editable={false}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="address"
-                        />
+                            name="address" />
 
                         <Controller
                             control={control}
@@ -201,14 +185,12 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         placeholderTextColor="#fff"
                                         editable={true}
                                         multiline={true}
-                                        numberOfLines={2}
-                                    />
+                                        numberOfLines={2} />
                                 </>
 
                             )}
                             name="address_now"
-                            rules={{ required: { value: true, message: "Địa chỉ không được bỏ trống" } }}
-                        />
+                            rules={{ required: { value: true, message: "Địa chỉ không được bỏ trống" } }} />
 
                         <Controller
                             control={control}
@@ -222,13 +204,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
                                         keyboardType='numeric'
-                                        editable={false}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="birthday"
-                        />
+                            name="birthday" />
 
                         <Controller
                             control={control}
@@ -241,13 +221,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
                                         keyboardType='default'
-                                        editable={false}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="issue_date"
-                        />
+                            name="issue_date" />
 
                         <Controller
                             control={control}
@@ -261,14 +239,12 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
                                         keyboardType='numeric'
-                                        editable={true}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
                             name="msbhxh"
-                            rules={{ required: { value: true, message: "Mã số BHXH không được bỏ trống" } }}
-                        />
+                            rules={{ required: { value: true, message: "Mã số BHXH không được bỏ trống" } }} />
 
                         <Controller
                             control={control}
@@ -281,14 +257,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
-                                        editable={true}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="facebook"
-                        // rules={{ required: { value: true, message: "Facebook không được bỏ trống" } }}
-                        />
+                            name="facebook" />
 
                         <Controller
                             control={control}
@@ -301,14 +274,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         value={value}
                                         onChangeText={onChange}
                                         placeholderTextColor="#fff"
-                                        editable={true}
-                                    />
+                                        editable={true} />
                                 </>
 
                             )}
-                            name="zalo"
-                        // rules={{ required: { value: true, message: "Zalo không được bỏ trống" } }}
-                        />
+                            name="zalo" />
 
                         <View style={{
                             borderBottomColor: 'white',
@@ -319,7 +289,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
 
                         <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20 }}>{'Thông tin người thân'}</Text>
 
-                        {defaultValuesForm.phone_number_reference.map((item: any, index: number) => (
+                        {defaultValuesForm.phone_reference.map((item: any, index: number) => (
                             <>
                                 <View key={index}>
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Quan hệ'}</Text>
@@ -353,7 +323,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                                 ]}
                                                 onSelect={(selectedItem) => {
                                                     // handle selected item
-                                                    onChange(selectedItem.value)
+                                                    onChange(selectedItem.value);
 
                                                 }}
                                                 renderButton={(selectedItem, isOpened) => {
@@ -372,13 +342,11 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                                             <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
                                                         </View>
                                                     );
-                                                }}
-                                            />
+                                                }} />
                                         )}
-                                        name={`phone_number_reference.${index}.relationship`}
-                                        rules={{ required: { value: true, message: "Quan hệ không được bỏ trống" } }}
-                                    />
-                                    {errors.phone_number_reference?.[index]?.relationship && <Text style={{ color: 'red' }}>{errors.phone_number_reference[index]?.relationship?.message}</Text>}
+                                        name={`phone_reference.${index}.relationship`}
+                                        rules={{ required: { value: true, message: "Quan hệ không được bỏ trống" } }} />
+                                    {errors.phone_reference?.[index]?.relationship && <Text style={{ color: 'red' }}>{errors.phone_reference[index]?.relationship?.message}</Text>}
 
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Họ và tên'}</Text>
 
@@ -386,41 +354,37 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
                                             <TextInput
-                                                style={errors.phone_number_reference?.[index]?.name ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                                style={errors.phone_reference?.[index]?.name ? [styles.input, { borderColor: 'red' }] : styles.input}
                                                 placeholder="Họ và tên"
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
                                                 placeholderTextColor="#fff"
                                                 defaultValue={item.name}
-                                                editable={true}
-                                            />
+                                                editable={true} />
                                         )}
-                                        name={`phone_number_reference.${index}.name`}
-                                        rules={{ required: { value: true, message: "Họ và tên không được bỏ trống" } }}
-                                    />
-                                    {errors.phone_number_reference?.[index]?.name && <Text style={{ color: 'red' }}>{errors.phone_number_reference[index].name?.message}</Text>}
+                                        name={`phone_reference.${index}.name`}
+                                        rules={{ required: { value: true, message: "Họ và tên không được bỏ trống" } }} />
+                                    {errors.phone_reference?.[index]?.name && <Text style={{ color: 'red' }}>{errors.phone_reference[index].name?.message}</Text>}
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số điện thoại'}</Text>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
                                             <TextInput
-                                                style={errors.phone_number_reference?.[index]?.phone ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                                style={errors.phone_reference?.[index]?.phone ? [styles.input, { borderColor: 'red' }] : styles.input}
                                                 placeholder="Số điện thoại"
                                                 value={value as string}
                                                 onChangeText={onChange}
                                                 placeholderTextColor="#fff"
                                                 keyboardType='numeric'
                                                 defaultValue={item.phone}
-                                                editable={true}
-                                            />
+                                                editable={true} />
                                         )}
-                                        name={`phone_number_reference.${index}.phone`}
+                                        name={`phone_reference.${index}.phone`}
                                         rules={{
                                             required: { value: true, message: "Số điện thoại không được bỏ trống" },
                                             pattern: { value: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" }
-                                        }}
-                                    />
-                                    {errors.phone_number_reference?.[index]?.phone && <Text style={{ color: 'red' }}>{errors.phone_number_reference[index].phone?.message}</Text>}
+                                        }} />
+                                    {errors.phone_reference?.[index]?.phone && <Text style={{ color: 'red' }}>{errors.phone_reference[index].phone?.message}</Text>}
                                 </View>
                                 <View style={{
                                     borderBottomColor: 'white',
@@ -432,8 +396,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                             </>
                         ))}
                         {/* xóa người thân */}
-                        {
-                            defaultValuesForm.phone_number_reference.length > 1 &&
+                        {defaultValuesForm.phone_reference.length > 1 &&
                             <View style={{ marginBottom: 30 }}>
                                 <Button title="Xóa người thân" onPress={() => {
                                     // get data from local storage
@@ -444,18 +407,17 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                                 ...defaultValuesForm,
                                                 ...JSON.parse(data),
                                             };
-                                            newData.phone_number_reference.pop();
+                                            newData.phone_reference.pop();
                                             setDefaultValues({
                                                 ...defaultValuesForm,
                                                 ...newData
                                             });
                                             storeData('user', JSON.stringify(newData));
                                         }
-                                    }
+                                    };
                                     getDataFromStorage();
                                 }} />
-                            </View>
-                        }
+                            </View>}
                         <View style={{ marginBottom: 10 }}>
                             <Button title="Thêm người thân" onPress={() => {
                                 // get data from local storage
@@ -466,8 +428,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                             ...defaultValuesForm,
                                             ...JSON.parse(data),
                                         };
-                                        newData.phone_number_reference.push({
-
+                                        newData.phone_reference.push({
                                             name: "",
                                             phone: "",
                                         });
@@ -477,7 +438,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
                                         });
                                         storeData('user', JSON.stringify(newData));
                                     }
-                                }
+                                };
                                 getDataFromStorage();
                             }} />
                         </View>
@@ -490,6 +451,7 @@ const RegisterSecreen3 = ({ navigation }: any) => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
 
@@ -574,4 +536,3 @@ const styles = StyleSheet.create({
 
 
 });
-export default RegisterSecreen3;
