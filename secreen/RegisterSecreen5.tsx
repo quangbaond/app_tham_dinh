@@ -104,7 +104,6 @@ const RegisterSecreen5 = ({ navigation }: any) => {
             formData.append(`so_dien_thoai_noi_lam_viec[${index}][relationship]`, item.relationship);
         });
 
-        console.log('formData', formData);
         fetch('https://tp.tucanhcomputer.vn/api/update-finance', {
             method: 'POST',
             headers: {
