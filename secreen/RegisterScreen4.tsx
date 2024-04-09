@@ -16,7 +16,6 @@ const RegisterScreen4 = ({ navigation }: any) => {
     const [next, setNext] = useState(false);
     const [userLogin, setUserLogin] = useState<any>(null);
 
-
     const data = [
         {
             "id": "xxxx",

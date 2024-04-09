@@ -25,7 +25,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                 id: 1,
                 dia_chi: "",
                 hinh_anh: "",
-                loai: "",
+                loai_tai_san: "",
             }
         ],
     });
@@ -35,13 +35,137 @@ const RegisterSecreen6 = ({ navigation }: any) => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        defaultValues: defaultValuesForm
+        defaultValues: async () => {
+            const userLogin = await getData('userLogin');
+            const token = JSON.parse(userLogin ?? '').token;
+            const result = await fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((response) => response.json())
+
+            setDefaultValues({
+                ...defaultValuesForm,
+                bat_dong_san: result.user_san_estates.map((item: any, index: number) => {
+                    return {
+                        id: item.id ?? index + 1,
+                        dia_chi: item.dia_chi,
+                        hinh_anh: item.hinh_anh,
+                    }
+                }),
+                dong_san: result.user_movables.map((item: any, index: number) => {
+                    return {
+                        id: item.id ?? index + 1,
+                        loai_tai_san: item.loai_tai_san,
+                        hinh_anh: item.hinh_anh,
+                        dia_chi: item.dia_chi,
+                    }
+                }),
+            });
+            return {
+                ...defaultValuesForm,
+                bat_dong_san: result.user_san_estates.map((item: any, index: number) => {
+                    return {
+                        id: item.id ?? index + 1,
+                        dia_chi: item.dia_chi,
+                        hinh_anh: item.hinh_anh,
+                    }
+                }),
+                dong_san: result.user_movables.map((item: any, index: number) => {
+                    return {
+                        id: item.id ?? index + 1,
+                        loai_tai_san: item.loai_tai_san,
+                        hinh_anh: item.hinh_anh,
+                        dia_chi: item.dia_chi,
+                    }
+                }),
+            }
+        }
 
     })
 
     const submit = async (data: any) => {
-        await storeData('taisan', JSON.stringify(data));
-        navigation.navigate('Khoản vay');
+        // setLoading(true);
+
+        const userLogin = await getData('userLogin');
+        const token = JSON.parse(userLogin as string).token;
+
+        const formData = new FormData();
+
+
+        data.bat_dong_san.forEach((item: any, index: number) => {
+            console.log('bat_dong_san', item);
+            formData.append(`bat_dong_san[${index}][dia_chi]`, item.dia_chi);
+            item.hinh_anh = defaultValuesForm.bat_dong_san[index].hinh_anh;
+            if (item.hinh_anh) {
+                if (!item.hinh_anh.includes('http')) {
+                    formData.append(`bat_dong_san[${index}][hinh_anh]`, {
+                        uri: item.hinh_anh,
+                        type: 'image/jpeg',
+                        name: item.hinh_anh.split('/').pop(),
+                    });
+                }
+            }
+
+        });
+
+        data.dong_san.forEach((item: any, index: number) => {
+            formData.append(`dong_san[${index}][loai_tai_san]`, item.loai_tai_san);
+            formData.append(`dong_san[${index}][dia_chi]`, item.dia_chi);
+            item.hinh_anh = defaultValuesForm.dong_san[index].hinh_anh;
+            if (item.hinh_anh) {
+                if (!item.hinh_anh.includes('http')) {
+                    formData.append(`dong_san[${index}][hinh_anh]`, {
+                        uri: item.hinh_anh,
+                        type: 'image/jpeg',
+                        name: item.hinh_anh.split('/').pop(),
+                    })
+                }
+            }
+        });
+
+        fetch('https://tp.tucanhcomputer.vn/api/update-tai-san', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+        }).then((response) => {
+            if (!response.ok) {
+                console.log('response', response.status);
+                throw new Error('Có lỗi xảy ra');
+
+            }
+            return response.json();
+
+        })
+            .then((data) => {
+                setLoading(false);
+                if (data.error) {
+                    Alert.alert('Lỗi', data.error);
+                    return;
+                }
+
+                if (data.message) {
+                    Alert.alert('Thành công', data.message);
+                }
+                console.log('data', data.user.user_loan_amounts);
+                
+                if (data.user.user_loan_amounts.length <= 0) {
+                    navigation.navigate('Khoản vay');
+                    return
+                } else {
+                    navigation.navigate('Trang cá nhân');
+                    return
+                }
+            }).catch((error) => {
+                setLoading(false);
+                if (error) {
+                    Alert.alert('Lỗi', 'Có lỗi xảy ra');
+                }
+            });
     }
 
     return (
@@ -70,11 +194,15 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 placeholderTextColor="#fff"
                                                 editable={true}
                                                 keyboardType='default'
+                                                multiline={true}
+                                                returnKeyLabel='next'
+                                                numberOfLines={4}
                                             />
                                         )}
                                         name={`bat_dong_san.${index}.dia_chi`}
-                                        rules={{ required: { value: true, message: "Quan hệ không được bỏ trống" } }}
+                                        rules={{ required: { value: true, message: "Địa chỉ không được để trống" } }}
                                     />
+
                                     {errors.bat_dong_san?.[index]?.dia_chi && <Text style={{ color: 'red' }}>{errors.bat_dong_san?.[index]?.dia_chi?.message}</Text>}
 
                                     {
@@ -82,72 +210,74 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     }
 
                                     {
-                                        item.hinh_anh ? <Button title="Xóa ảnh" onPress={() => {
-                                            setDefaultValues((prew: any) => {
-                                                const newValues = { ...prew };
-                                                newValues.bat_dong_san[index].hinh_anh = "";
-                                                return newValues;
-                                            });
-                                        }} /> : (
+                                        item.hinh_anh ?
                                             <View style={{ marginBottom: 10 }}>
-                                                <Button title="Thêm ảnh" onPress={async () => {
-                                                    try {
-                                                        const granted = await PermissionsAndroid.request(
-                                                            PermissionsAndroid.PERMISSIONS.CAMERA,
-                                                            {
-                                                                title: "Camera Permission",
-                                                                message: "App needs access to your camera ",
-                                                                buttonNeutral: "Ask Me Later",
-                                                                buttonNegative: "Cancel",
-                                                                buttonPositive: "OK"
-                                                            }
-                                                        );
-                                                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                                            console.log("You can use the camera");
-                                                            // lunch camera
-                                                            const result = await ImagePicker.launchCamera({
-                                                                mediaType: 'photo',
-                                                                includeBase64: false,
-                                                                cameraType: 'back',
-                                                                saveToPhotos: true,
-                                                                includeExtra: true,
-                                                            }, (response: any) => {
-                                                                console.log('Response = ', response);
-                                                                if (response.didCancel) {
-                                                                    console.log('User cancelled image picker');
-                                                                    Alert.alert('Bạn đã hủy chọn ảnh');
-                                                                } else if (response.error) {
-                                                                    console.log('Có lỗi xảy ra: ', response.error);
-                                                                    Alert.alert('Có lỗi xảy ra');
-                                                                } else if (response.customButton) {
-                                                                    console.log('User tapped custom button: ', response.customButton);
-                                                                    Alert.alert('Bạn đã chọn ảnh từ thư viện');
-                                                                } else {
-                                                                    setDefaultValues((prew: any) => {
-                                                                        const newValues = { ...prew };
-                                                                        newValues.bat_dong_san[index].hinh_anh = response.assets[0].uri;
-                                                                        console.log('newValues', newValues);
-
-                                                                        return newValues;
-                                                                    });
-                                                                }
-                                                            });
-                                                        } else {
-                                                            Alert.alert('Không thể mở thư viện ảnh');
-                                                        }
-                                                    } catch (err) {
-                                                        console.warn('Thiết bị không hỗ trợ camera');
-                                                        Alert.alert('Thiết bị không hỗ trợ truy cập thư viện ảnh');
-                                                    }
+                                                <Button title="Xóa ảnh" onPress={() => {
+                                                    setDefaultValues((prew: any) => {
+                                                        const newValues = { ...prew };
+                                                        newValues.bat_dong_san[index].hinh_anh = "";
+                                                        return newValues;
+                                                    });
                                                 }} />
                                             </View>
+                                            : (
+                                                <View style={{ marginBottom: 10 }}>
+                                                    <Button title="Thêm ảnh" onPress={async () => {
+                                                        try {
+                                                            const granted = await PermissionsAndroid.request(
+                                                                PermissionsAndroid.PERMISSIONS.CAMERA,
+                                                                {
+                                                                    title: "Camera Permission",
+                                                                    message: "App needs access to your camera ",
+                                                                    buttonNeutral: "Ask Me Later",
+                                                                    buttonNegative: "Cancel",
+                                                                    buttonPositive: "OK"
+                                                                }
+                                                            );
+                                                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                                                console.log("You can use the camera");
+                                                                // lunch camera
+                                                                const result = await ImagePicker.launchImageLibrary({
+                                                                    mediaType: 'photo',
+                                                                    includeBase64: false,
+                                                                    selectionLimit: 1,
+                                                                }, (response: any) => {
+                                                                    console.log('Response = ', response);
+                                                                    if (response.didCancel) {
+                                                                        console.log('User cancelled image picker');
+                                                                        Alert.alert('Bạn đã hủy chọn ảnh');
+                                                                    } else if (response.error) {
+                                                                        console.log('Có lỗi xảy ra: ', response.error);
+                                                                        Alert.alert('Có lỗi xảy ra');
+                                                                    } else if (response.customButton) {
+                                                                        console.log('User tapped custom button: ', response.customButton);
+                                                                        Alert.alert('Bạn đã chọn ảnh từ thư viện');
+                                                                    } else {
+                                                                        setDefaultValues((prew: any) => {
+                                                                            const newValues = { ...prew };
+                                                                            newValues.bat_dong_san[index].hinh_anh = response.assets[0].uri;
+                                                                            console.log('newValues', newValues);
 
-                                        )
+                                                                            return newValues;
+                                                                        });
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                Alert.alert('Không thể mở thư viện ảnh');
+                                                            }
+                                                        } catch (err) {
+                                                            console.warn('Thiết bị không hỗ trợ camera');
+                                                            Alert.alert('Thiết bị không hỗ trợ truy cập thư viện ảnh');
+                                                        }
+                                                    }} />
+                                                </View>
+
+                                            )
                                     }
                                 </View>
 
                                 {
-                                    defaultValuesForm.bat_dong_san.length > 1 && (
+                                    defaultValuesForm.bat_dong_san.length > 1 ? (
                                         <View style={{ marginBottom: 10 }}>
                                             <Button title="Xoá bất động sản" onPress={() => {
                                                 setDefaultValues((prew: any) => {
@@ -157,7 +287,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 });
                                             }} />
                                         </View>
-                                    )
+                                    ) : null
                                 }
 
                                 <View style={{
@@ -197,7 +327,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
                                             <TextInput
-                                                style={errors.dong_san?.[index]?.loai ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                                style={errors.dong_san?.[index]?.loai_tai_san ? [styles.input, { borderColor: 'red' }] : styles.input}
                                                 placeholder="Xe máy, Ô tô,..."
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
@@ -206,77 +336,100 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 keyboardType='default'
                                             />
                                         )}
-                                        name={`dong_san.${index}.loai`}
-                                        rules={{ required: { value: true, message: "Quan hệ không được bỏ trống" } }}
+                                        name={`dong_san.${index}.loai_tai_san`}
+                                        rules={{ required: { value: true, message: "Loại tài sản không được bỏ trống." } }}
                                     />
-                                    {errors.dong_san?.[index]?.loai && <Text style={{ color: 'red' }}>{errors.dong_san?.[index]?.loai?.message}</Text>}
+                                    {errors.dong_san?.[index]?.loai_tai_san && <Text style={{ color: 'red' }}>{errors.dong_san?.[index]?.loai_tai_san?.message}</Text>}
+
+                                    <Controller
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <TextInput
+                                                style={errors.dong_san?.[index]?.dia_chi ? [styles.input, { borderColor: 'red' }] : styles.input}
+                                                placeholder="Địa chỉ."
+                                                value={value as string} // Cast value to string
+                                                onChangeText={onChange}
+                                                placeholderTextColor="#fff"
+                                                editable={true}
+                                                keyboardType='default'
+                                                multiline={true}
+                                                numberOfLines={4}
+                                            />
+                                        )}
+                                        name={`dong_san.${index}.dia_chi`}
+                                        rules={{ required: { value: true, message: "Loại tài sản không được bỏ trống." } }}
+                                    />
+
+                                    {errors.dong_san?.[index]?.dia_chi && <Text style={{ color: 'red' }}>{errors.dong_san?.[index]?.dia_chi?.message}</Text>}
+
 
                                     {
                                         item.hinh_anh ? <Image source={{ uri: item.hinh_anh }} style={{ height: 200, marginBottom: 10 }} resizeMode="cover" /> : null
                                     }
 
                                     {
-                                        item.hinh_anh ? <Button title="Xóa ảnh" onPress={() => {
-                                            setDefaultValues((prew: any) => {
-                                                const newValues = { ...prew };
-                                                newValues.dong_san[index].hinh_anh = "";
-                                                return newValues;
-                                            });
-                                        }} /> : (
+                                        item.hinh_anh ?
                                             <View style={{ marginBottom: 10 }}>
-                                                <Button title="Thêm ảnh" onPress={async () => {
-                                                    try {
-                                                        const granted = await PermissionsAndroid.request(
-                                                            PermissionsAndroid.PERMISSIONS.CAMERA,
-                                                            {
-                                                                title: "Camera Permission",
-                                                                message: "App needs access to your camera ",
-                                                                buttonNeutral: "Ask Me Later",
-                                                                buttonNegative: "Cancel",
-                                                                buttonPositive: "OK"
-                                                            }
-                                                        );
-                                                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                                            console.log("You can use the camera");
-                                                            // lunch camera
-                                                            const result = await ImagePicker.launchCamera({
-                                                                mediaType: 'photo',
-                                                                includeBase64: false,
-                                                                cameraType: 'back',
-                                                                saveToPhotos: true,
-                                                                includeExtra: true,
-
-                                                            }, (response: any) => {
-                                                                console.log('Response = ', response);
-                                                                if (response.didCancel) {
-                                                                    console.log('User cancelled image picker');
-                                                                    Alert.alert('Bạn đã hủy chọn ảnh');
-                                                                } else if (response.error) {
-                                                                    console.log('Có lỗi xảy ra: ', response.error);
-                                                                    Alert.alert('Có lỗi xảy ra');
-                                                                } else if (response.customButton) {
-                                                                    console.log('User tapped custom button: ', response.customButton);
-                                                                    Alert.alert('Bạn đã chọn ảnh từ thư viện');
-                                                                } else {
-                                                                    setDefaultValues((prew: any) => {
-                                                                        const newValues = { ...prew };
-                                                                        newValues.dong_san[index].hinh_anh = response.assets[0].uri;
-                                                                        console.log('newValues', newValues);
-
-                                                                        return newValues;
-                                                                    });
-                                                                }
-                                                            });
-                                                        }
-                                                    } catch (err) {
-                                                        console.warn('Thiết bị không hỗ trợ camera');
-                                                        Alert.alert('Thiết bị không hỗ trợ truy cập thư viện ảnh');
-                                                    }
-                                                }
-                                                } />
+                                                <Button title="Xóa ảnh" onPress={() => {
+                                                    setDefaultValues((prew: any) => {
+                                                        const newValues = { ...prew };
+                                                        newValues.dong_san[index].hinh_anh = "";
+                                                        return newValues;
+                                                    });
+                                                }} />
                                             </View>
+                                            : (
+                                                <View style={{ marginBottom: 10 }}>
+                                                    <Button title="Thêm ảnh" onPress={async () => {
+                                                        try {
+                                                            const granted = await PermissionsAndroid.request(
+                                                                PermissionsAndroid.PERMISSIONS.CAMERA,
+                                                                {
+                                                                    title: "Camera Permission",
+                                                                    message: "App needs access to your camera ",
+                                                                    buttonNeutral: "Ask Me Later",
+                                                                    buttonNegative: "Cancel",
+                                                                    buttonPositive: "OK"
+                                                                }
+                                                            );
+                                                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                                                console.log("You can use the camera");
+                                                                // lunch camera
+                                                                const result = await ImagePicker.launchImageLibrary({
+                                                                    mediaType: 'photo',
+                                                                    includeBase64: false,
+                                                                    selectionLimit: 1,
+                                                                }, (response: any) => {
+                                                                    console.log('Response = ', response);
+                                                                    if (response.didCancel) {
+                                                                        console.log('User cancelled image picker');
+                                                                        Alert.alert('Bạn đã hủy chọn ảnh');
+                                                                    } else if (response.error) {
+                                                                        console.log('Có lỗi xảy ra: ', response.error);
+                                                                        Alert.alert('Có lỗi xảy ra');
+                                                                    } else if (response.customButton) {
+                                                                        console.log('User tapped custom button: ', response.customButton);
+                                                                        Alert.alert('Bạn đã chọn ảnh từ thư viện');
+                                                                    } else {
+                                                                        setDefaultValues((prew: any) => {
+                                                                            const newValues = { ...prew };
+                                                                            newValues.dong_san[index].hinh_anh = response.assets[0].uri;
+                                                                            console.log('newValues', newValues);
 
-                                        )
+                                                                            return newValues;
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        } catch (err) {
+                                                            console.warn('Thiết bị không hỗ trợ camera');
+                                                            Alert.alert('Thiết bị không hỗ trợ truy cập thư viện ảnh');
+                                                        }
+                                                    }
+                                                    } />
+                                                </View>
+
+                                            )
                                     }
                                 </View>
 

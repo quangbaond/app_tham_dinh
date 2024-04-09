@@ -57,7 +57,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                     }
                 }),
             });
-            
+
             return {
                 ...defaultValuesForm,
                 ...result?.user_finances,
@@ -75,7 +75,12 @@ const RegisterSecreen5 = ({ navigation }: any) => {
 
     const submit = async (data: any) => {
         setLoading(true);
-        
+        if(iamges.length <= 0) {
+            setLoading(false);
+            Alert.alert('Lỗi', 'Vui lòng chọn ảnh sao kê nhận lương');
+            return;
+        }
+
         const userLogin = await getData('userLogin');
         const token = JSON.parse(userLogin as string).token;
         const formData = new FormData();
@@ -85,12 +90,12 @@ const RegisterSecreen5 = ({ navigation }: any) => {
         formData.append('so_dien_thoai_cong_ty', data.so_dien_thoai_cong_ty);
         iamges.forEach((item: any, index: number) => {
             // check nếu là url ảnh thì không cần thêm vào form data
-            if(!item.includes('http')) {    
+            if (!item.includes('http')) {
                 formData.append(`sao_ke_nhan_luong[${index}]`, {
                     uri: item,
                     type: 'image/jpeg',
                     name: item.split('/').pop(),
-                });            
+                });
             }
         });
         data.so_dien_thoai_noi_lam_viec.forEach((item: any, index: number) => {
@@ -100,8 +105,6 @@ const RegisterSecreen5 = ({ navigation }: any) => {
         });
 
         console.log('formData', formData);
-        
-        
         fetch('https://tp.tucanhcomputer.vn/api/update-finance', {
             method: 'POST',
             headers: {
@@ -110,26 +113,27 @@ const RegisterSecreen5 = ({ navigation }: any) => {
             },
             body: formData,
         }).then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            setLoading(false);
-            if(data.error) {
-                Alert.alert('Lỗi', data.error);
-                return;
-            }
-            if(data.message) {
-                Alert.alert('Thành công', data.message);
-            }
-            if(!data.user.user_san_estates || !data.user.user_movables) {
-                navigation.navigate('Tài sản');
-            } else {
-                navigation.navigate('Trang cá nhân');
-            }
-        }).catch((error) => {
-            console.log(error);
-            setLoading(false);
-            Alert.alert('Lỗi', 'Có lỗi xảy ra');
-        });
+            .then((data) => {
+                setLoading(false);
+                if(data.error) {
+                    Alert.alert('Lỗi', data.error);
+                    return;
+                }
+
+                if(data.message) {
+                    Alert.alert('Thành công', data.message);
+                }
+                if(data.user.user_movables.length <= 0  || data.user.user_san_estates.length <= 0) {
+                    navigation.navigate('Tài sản');
+                } else {
+                    navigation.navigate('Trang cá nhân');
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+                Alert.alert('Lỗi', 'Có lỗi xảy ra');
+            });
     }
 
     return (
