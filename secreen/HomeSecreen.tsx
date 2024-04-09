@@ -36,27 +36,27 @@ const HomeSecreen = ({ navigation }: any) => {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin cá nhân để tiếp tục');
                 navigation.navigate('Xác thực CMND/CCCD');
                 return;
-            }
+            } 
 
-            if(!userLogin?.user_licenses) {
+            else if(!userLogin?.user_licenses) {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin bằng lái xe để tiếp tục');
                 navigation.navigate('Xác thực BLX');
                 return;
             }
 
-            if(!userLogin?.user_finances) {
+            else if(!userLogin?.user_finances) {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin tài chính để tiếp tục');
-                navigation.navigate('Tài chính');
+                navigation.navigate('BLX');
                 return;
             }
 
-            if(!userLogin?.user_movables || !userLogin?.user_san_estates) {
+            else if(!userLogin?.user_movables || !userLogin?.user_san_estates) {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin tài sản để tiếp tục');
                 navigation.navigate('Tài sản');
                 return;
             }
 
-            if(!userLogin?.user_loan_amounts) {
+            else if(!userLogin?.user_loan_amounts) {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin công việc để tiếp tục');
                 navigation.navigate('Khoản vay');
                 return;

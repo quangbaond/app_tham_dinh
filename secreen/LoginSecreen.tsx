@@ -1,5 +1,5 @@
 // LoginScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert } from 'react-native';
 import { storeData } from '../common';
 
@@ -7,6 +7,16 @@ import { storeData } from '../common';
 const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        const getUserLogin = async () => {
+            const userLogin = await storeData('userLogin');
+            const userLoginParse = JSON.parse(userLogin as unknown as string);
+            if(userLoginParse) {
+                navigation.navigate('Trang cá nhân');
+            }
+        }
+    }, []);
 
     const handleLogin = async () => {
         fetch('https://tp.tucanhcomputer.vn/api/auth/login', {

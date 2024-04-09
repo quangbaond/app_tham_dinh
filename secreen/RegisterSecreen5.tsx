@@ -1,11 +1,12 @@
 // LoginScreen.js
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform } from 'react-native';
 import { useForm, Controller, set } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
 import SelectDropdown from 'react-native-select-dropdown';
+import axios from 'axios';
 
 const RegisterSecreen5 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -18,7 +19,6 @@ const RegisterSecreen5 = ({ navigation }: any) => {
         ten_cong_ty: "",
         dia_chi_cong_ty: "",
         so_dien_thoai_cong_ty: "",
-        sao_ke_nhan_luong: "",
         so_dien_thoai_noi_lam_viec: [
             {
                 id: 1,
@@ -34,13 +34,102 @@ const RegisterSecreen5 = ({ navigation }: any) => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        defaultValues: defaultValuesForm
+        defaultValues: async () => {
+            const userLogin = await getData('userLogin');
+            const token = JSON.parse(userLogin ?? '').token;
+            const result = await fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((response) => response.json())
+            setImages(result?.user_salary_statements.map((item: any) => {
+                return item.images;
+            }));
+            setDefaultValues({
+                ...defaultValuesForm,
+                ...result?.user_finances,
+                so_dien_thoai_noi_lam_viec: result?.user_phone_work_places.map((item: any) => {
+                    return {
+                        name: item.name,
+                        phone: item.phone,
+                        relationship: item.relationship,
+                    }
+                }),
+            });
+            
+            return {
+                ...defaultValuesForm,
+                ...result?.user_finances,
+                so_dien_thoai_noi_lam_viec: result?.user_phone_work_places.map((item: any) => {
+                    return {
+                        name: item.name,
+                        phone: item.phone,
+                        relationship: item.relationship,
+                    }
+                }),
+            };
+        },
 
     })
 
     const submit = async (data: any) => {
-        await storeData('taichinh', JSON.stringify(data));
-        navigation.navigate('Tài sản');
+        setLoading(true);
+        
+        const userLogin = await getData('userLogin');
+        const token = JSON.parse(userLogin as string).token;
+        const formData = new FormData();
+        formData.append('thu_nhap_hang_thang', data.thu_nhap_hang_thang);
+        formData.append('dia_chi_cong_ty', data.dia_chi_cong_ty);
+        formData.append('ten_cong_ty', data.ten_cong_ty);
+        formData.append('so_dien_thoai_cong_ty', data.so_dien_thoai_cong_ty);
+        iamges.forEach((item: any, index: number) => {
+            // check nếu là url ảnh thì không cần thêm vào form data
+            if(!item.includes('http')) {    
+                formData.append(`sao_ke_nhan_luong[${index}]`, {
+                    uri: item,
+                    type: 'image/jpeg',
+                    name: item.split('/').pop(),
+                });            
+            }
+        });
+        data.so_dien_thoai_noi_lam_viec.forEach((item: any, index: number) => {
+            formData.append(`so_dien_thoai_noi_lam_viec[${index}][name]`, item.name);
+            formData.append(`so_dien_thoai_noi_lam_viec[${index}][phone]`, item.phone);
+            formData.append(`so_dien_thoai_noi_lam_viec[${index}][relationship]`, item.relationship);
+        });
+
+        console.log('formData', formData);
+        
+        
+        fetch('https://tp.tucanhcomputer.vn/api/update-finance', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setLoading(false);
+            if(data.error) {
+                Alert.alert('Lỗi', data.error);
+                return;
+            }
+            if(data.message) {
+                Alert.alert('Thành công', data.message);
+            }
+            if(!data.user.user_san_estates || !data.user.user_movables) {
+                navigation.navigate('Tài sản');
+            } else {
+                navigation.navigate('Trang cá nhân');
+            }
+        }).catch((error) => {
+            console.log(error);
+            setLoading(false);
+            Alert.alert('Lỗi', 'Có lỗi xảy ra');
+        });
     }
 
     return (
@@ -82,9 +171,9 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                         {iamges.map((item: any, index: number) => {
                             return (
                                 <View style={{ display: 'flex', marginBottom: 10 }}>
-                                    {item.uri && (
+                                    {item && (
                                         <>
-                                            <Image key={index} source={{ uri: item.uri }} style={{ height: 150, marginBottom: 10 }} />
+                                            <Image key={index} source={{ uri: item }} style={{ height: 150, marginBottom: 10 }} />
                                             <Button title="Xóa ảnh" onPress={() => {
                                                 const newImages = iamges.filter((item: any, i: number) => i !== index);
                                                 setImages(newImages);
@@ -126,7 +215,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                             console.log('User tapped custom button: ', response.customButton);
                                         } else {
                                             // setImages(response.assets);
-                                            setImages((prew) => [...prew, response.assets[0]]);
+                                            setImages((prew) => [...prew, response.assets[0].uri]);
                                             // response.assets.forEach((element: any, index: number) => {
                                             //     console.log('element', element);
                                             // });
@@ -142,7 +231,27 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             }
                         }} />
 
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <>
+                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10, marginTop: 10 }}>{'Tên Công ty'}</Text>
+                                    <TextInput
+                                        style={errors.dia_chi_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
+                                        placeholder="Tên công ty"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        placeholderTextColor="#fff"
+                                        keyboardType='default'
+                                        editable={true}
+                                        multiline={true}
+                                        numberOfLines={2}
+                                    />
+                                </>
 
+                            )}
+                            name="ten_cong_ty"
+                        />
 
                         <Controller
                             control={control}
@@ -172,7 +281,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                 <>
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số điện thoại công ty'}</Text>
                                     <TextInput
-                                        style={errors.So_dien_thoai_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
+                                        style={errors.so_dien_thoai_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         placeholder="Số điện thoại công ty"
                                         value={value}
                                         onChangeText={onChange}
@@ -182,7 +291,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                 </>
 
                             )}
-                            name="So_dien_thoai_cong_ty"
+                            name="so_dien_thoai_cong_ty"
                             rules={{
                                 required: { value: true, message: "Số điện thoại công ty không được bỏ trống" },
                                 pattern: { value: /^[0-9]{10}$/, message: "Số điện thoại không hợp lệ" }
@@ -223,9 +332,13 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                                     value: 'Gia đình nhân sự'
                                                 }
                                                 ]}
+                                                defaultValueByIndex={
+                                                    value === 'Giám đốc' ? 0 : value === 'Quản lý công ty' ? 1 : value === 'Kế toán' ? 2 : value === 'Gia đình nhân sự' ? 3 : 0
+                                                }
                                                 onSelect={(selectedItem) => {
                                                     // handle selected item
                                                     console.log(selectedItem);
+                                                    onChange(selectedItem.value);
 
                                                 }}
                                                 renderButton={(selectedItem, isOpened) => {
@@ -310,47 +423,20 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             <View style={{ marginBottom: 30 }}>
                                 <Button title="Xóa người tham chiếu" onPress={() => {
                                     // get data from local storage
-                                    const getDataFromStorage = async () => {
-                                        const data = await getData('taichinh');
-                                        if (data) {
-                                            const newData = {
-                                                ...defaultValuesForm,
-                                                ...JSON.parse(data),
-                                            };
-                                            newData.so_dien_thoai_noi_lam_viec.pop();
-                                            setDefaultValues({
-                                                ...defaultValuesForm,
-                                                ...newData
-                                            });
-                                            storeData('taichinh', JSON.stringify(newData));
-                                        }
-                                    }
-                                    getDataFromStorage();
+                                    const newValues = defaultValuesForm.so_dien_thoai_noi_lam_viec.slice(0, defaultValuesForm.so_dien_thoai_noi_lam_viec.length - 1);
+                                    setDefaultValues({ ...defaultValuesForm, so_dien_thoai_noi_lam_viec: newValues });
                                 }} />
                             </View>
                         }
                         <View style={{ marginBottom: 10 }}>
                             <Button title="Thêm người tham chiếu" onPress={() => {
-                                // get data from local storage
-                                const getDataFromStorage = async () => {
-                                    const data = await getData('taichinh');
-                                    if (data) {
-                                        const newData = {
-                                            ...defaultValuesForm,
-                                            ...JSON.parse(data),
-                                        };
-                                        newData.so_dien_thoai_noi_lam_viec.push({
-                                            name: "",
-                                            phone: "",
-                                        });
-                                        setDefaultValues({
-                                            ...defaultValuesForm,
-                                            ...newData
-                                        });
-                                        storeData('taichinh', JSON.stringify(newData));
-                                    }
-                                }
-                                getDataFromStorage();
+                                const newValues = defaultValuesForm.so_dien_thoai_noi_lam_viec.concat({
+                                    id: defaultValuesForm.so_dien_thoai_noi_lam_viec.length + 1,
+                                    name: "",
+                                    phone: "",
+                                    relationship: "",
+                                });
+                                setDefaultValues({ ...defaultValuesForm, so_dien_thoai_noi_lam_viec: newValues });
                             }} />
                         </View>
                         <View style={{ marginBottom: 30 }}>
