@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Button, ScrollView } from 'react-native';
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Button, ScrollView, Alert } from 'react-native';
+import { useForm, Controller, set } from "react-hook-form";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { storeData } from '../common';
+import { getData, storeData } from '../common';
 import SelectDropdown, { SelectDropdownProps } from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Table, Row, Rows } from 'react-native-table-component'
@@ -10,36 +10,21 @@ import { Table, Row, Rows } from 'react-native-table-component'
 export const RegisterSecreen7 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [userLogin, setUserLogin] = useState<any>(null);
 
     const [iamges, setImages] = useState([] as any);
+    const [period, setPeriod] = useState([] as any);
 
     const [defaultValuesForm, setDefaultValues] = useState({
         so_tien_vay: "",
         thoi_han_vay: "",
     });
 
-    const tableHead = ['Thời gian', 'Số tiền vay', 'Trạng thái'];
-    const tableData = [
-        ['3 tháng', '15,000,000', 'Đã hoàn thành'],
-        ['6 tháng', '20,000,000', 'Đã hoàn thành'],
-        ['12 tháng', '25,000,000', 'Đã hoàn thành'],
-    ];
+    const tableHead = ['Thời hạn', 'Số tiền', 'Trạng thái', 'Thời gian'];
+    const [tableData, setTableData] = useState([] as any);
     const tableHeadMonth = ['Thời gian', 'Số tiền'];
 
-    const [tableDataMonth, setTableDataMonth] = useState([
-        ['1 tháng', '5,000,000'],
-        ['2 tháng', '5,000,000'],
-        ['3 tháng', '5,000,000'],
-        ['4 tháng', '5,000,000'],
-        ['5 tháng', '5,000,000'],
-        ['6 tháng', '5,000,000'],
-        ['7 tháng', '5,000,000'],
-        ['8 tháng', '5,000,000'],
-        ['9 tháng', '5,000,000'],
-        ['10 tháng', '5,000,000'],
-        ['11 tháng', '5,000,000'],
-        ['12 tháng', '5,000,000'],
-    ]);
+    const [tableDataMonth, setTableDataMonth] = useState([]);
     const [money, setMoney] = useState(0);
 
     const {
@@ -48,26 +33,91 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
         defaultValues: defaultValuesForm,
     });
 
-    const submit = async (data: any) => {
-        await storeData('khoanvay', JSON.stringify(data));
-        navigation.navigate('Cá nhân');
-    };
+    useEffect(() => {
+        const getUserData = async () => {
+            const userLogin = await getData('userLogin');
+            const token = JSON.parse(userLogin as unknown as string).token;
 
-    const onlyMonth = (value: any) => {
-        console.log(value);
-
-        let month = value
-        if (value > 12) {
-            month = value - 12;
+            fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((response) => response.json()).then((data) => {
+                setUserLogin(data);
+            }).catch((error) => {
+                console.log('error', error);
+                Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
+            });
         }
-        return month;
-    }
+        const getPerod = async () => {
+            setLoading(true);
+
+            fetch('https://tp.tucanhcomputer.vn/api/get-period', {
+                method: 'GET',
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setPeriod(data);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log('error', error);
+                    setLoading(false);
+                });
+        }
+        getUserData()
+        getPerod();
+    }, []);
+
+    useEffect(() => {
+        if (userLogin) {
+            setTableData(
+                userLogin?.user_loan_amounts.map((item: any) => {
+                    item.khoan_vay = item.khoan_vay.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    return [item.thoi_han_vay, item.khoan_vay, item.status === 0 ? 'Đang đuyệt' : ( item.status === 1 ? 'Đã duyệt' : 'Từ chối') , item.created_at];
+                })
+            );
+        }
+    }, [userLogin]);
 
 
 
-    const renderItem = (item: any, index: number, isSelected: boolean) => {
-        // render dropdown item
-        return null; // Replace null with your dropdown item component
+    const submit = async (data: any) => {
+        setLoading(true);
+        const userLogin = await getData('userLogin');
+        const token = JSON.parse(userLogin as unknown as string).token;
+        const formData = new FormData();
+        formData.append('khoan_vay', data.so_tien_vay.replace(/,/g, ''));
+        formData.append('thoi_han_vay', data.thoi_han_vay);
+
+        fetch('https://tp.tucanhcomputer.vn/api/create-loan-amount', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+        })
+
+            .then((response) => {
+                return response.json();
+            
+            })
+            .then((data) => {
+                if(data.message) {
+                    Alert.alert('Thành công', data.message);
+                    navigation.navigate('Trang cá nhân');
+                }
+            })
+            .catch((error) => {
+                if (error) {
+                    console.log('error', error);
+                    Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     return (
@@ -111,106 +161,35 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                     <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10, marginTop: 10 }}>{'Thời hạn vay'}</Text>
                                     {/* // select dropdown */}
                                     <SelectDropdown
-                                        data={[{
-                                            title: '3 tháng',
-                                            value: 3
-                                        }, {
-                                            title: '6 tháng',
-                                            value: 6
-                                        }, {
-                                            title: '12 tháng',
-                                            value: 12
-                                        },
-                                        {
-                                            title: '24 tháng',
-                                            value: 24
-                                        },
-                                        {
-                                            title: '36 tháng',
-                                            value: 36
-                                        },
-                                        {
-                                            title: '48 tháng',
-                                            value: 48
-                                        },
-                                        {
-                                            title: '60 tháng',
-                                            value: 60
-                                        },
-                                        {
-                                            title: '72 tháng',
-                                            value: 72
-                                        },
-                                        {
-                                            title: '84 tháng',
-                                            value: 84
-                                        },
-                                        {
-                                            title: '96 tháng',
-                                            value: 96
-                                        },
-                                        {
-                                            title: '108 tháng',
-                                            value: 108
-                                        },
-                                        {
-                                            title: '120 tháng',
-                                            value: 120
-                                        },
-                                        ]}
+                                        data={period}
                                         onSelect={(selectedItem) => {
-                                            // handle selected item
-                                            console.log(selectedItem);
-                                            const { value } = selectedItem;
-                                            console.log(value);
-                                            let data = [] as any;
+                                            onChange(selectedItem.title);
+                                            
+                                            const laixuat = parseFloat(selectedItem.value) / 12;
+                                            
+                                            let goc = money;
+                                            const thoihan = parseInt(selectedItem.title.split(' ')[0]);
+                                            const lichtra = [];
+                                            let goc_con_lai = goc;
+                                            let goc_moi_ky = goc / thoihan;                                            
+                                            let lai = 0;
+                                            let tong_goc_lai = 0;
 
+                                            for (let i = 0; i <= thoihan; i++) {
+                                                console.log('laixuat', laixuat);
+                                                lai = goc_con_lai * laixuat / 100;
+                                                tong_goc_lai = goc_moi_ky + lai;
+                                                console.log('goc_con_lai', goc_con_lai);
+                                                console.log('goc_moi_ky', goc_moi_ky);
+                                                console.log('tong_goc_lai', tong_goc_lai.toFixed(0));
+                                                console.log('lai', lai);
+                                                goc_con_lai = goc_con_lai - goc_moi_ky;
+                                                const date = new Date();
+                                                date.setMonth(date.getMonth() + i);
 
-                                            if (money > 0) {
-                                                // tiền trả moi tháng sẽ được chia đều và cộng thêm 12% lãi suất và trừ đi gốc
-
-                                                // vay 3 tỷ trong 12 tháng thì mỗi tháng tiền gốc sẽ tr
-
-                                                const monthNow = new Date().getMonth() + 1;
-                                                let remainingMoney = money;
-
-                                                // const data = Array.from({ length: value }, (v, k) => {
-                                                //     let month = monthNow + 1;
-                                                //     if (month > 12) {
-                                                //         month = month - 12;
-                                                //     }
-                                                //     const moneyMonth = remainingMoney / value + remainingMoney * 0.12;
-
-                                                //     const currency = moneyMonth.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                                                //     // tiền gốc sẽ giảm 8.33% mỗi tháng
-                                                //     remainingMoney -= money / value;
-                                                //     return [`tháng ${month} `, `${currency}`];
-                                                // });
-                                                let month = monthNow;
-
-                                                for (let i = 0; i < value; i++) {
-                                                    month++;
-
-                                                    if (month > 12) {
-                                                        month = month - 12;
-                                                    }
-                                                    // chỉ lấy 12 tháng
-
-
-                                                    const moneyMonth = remainingMoney / value + remainingMoney * 0.12;
-
-                                                    const currency = moneyMonth.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                                                    data.push([`tháng ${month} `, `${currency}`]);
-
-                                                    // tiền gốc sẽ giảm 8.33% mỗi tháng
-                                                    remainingMoney -= 2500000;
-
-                                                }
-                                                setTableDataMonth(data);
+                                                lichtra.push([date.toLocaleDateString(), tong_goc_lai.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")]);
                                             }
-
+                                            setTableDataMonth(lichtra);
                                         }}
                                         renderButton={(selectedItem, isOpened) => {
                                             return (
@@ -238,14 +217,19 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                             )}
                             name="thoi_han_vay" />
 
-                        <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20, marginTop: 20 }}>{'Lịch trả nợ'}</Text>
+                        {
+                            tableDataMonth.length > 0 &&
+                            <>
+                                <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20, marginTop: 20 }}>{'Lịch trả nợ'}</Text>
+                                <View>
+                                    <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+                                        <Row data={tableHeadMonth} style={styles.head} textStyle={styles.text} />
+                                        <Rows data={tableDataMonth} textStyle={styles.text} />
+                                    </Table>
+                                </View>
+                            </>
 
-                        <View>
-                            <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
-                                <Row data={tableHeadMonth} style={styles.head} textStyle={styles.text} />
-                                <Rows data={tableDataMonth} textStyle={styles.text} />
-                            </Table>
-                        </View>
+                        }
 
                         <View style={{
                             borderBottomColor: 'white',
@@ -356,5 +340,5 @@ const styles = StyleSheet.create({
     },
 
     head: { height: 40, backgroundColor: 'blue', textAlign: 'center' },
-    text: { margin: 6, color: '#fff' }
+    text: { margin: 6, color: '#fff', fontSize: 12, textAlign: 'center' }
 });

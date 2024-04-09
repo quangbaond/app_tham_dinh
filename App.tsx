@@ -22,7 +22,7 @@ function App(): React.JSX.Element {
   const [loading, setLoading] = React.useState(false);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Đăng nhập' screenOptions={{ headerShown: true }}>
+      <Stack.Navigator initialRouteName='Trang cá nhân' screenOptions={{ headerShown: true }}>
         <Stack.Screen name="Đăng nhập" component={LoginScreen} />
         <Stack.Screen name="Đăng ký" component={RegisterScreen} />
         <Stack.Screen name="Xác thực CMND/CCCD" component={RegisterScreen2} />

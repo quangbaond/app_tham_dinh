@@ -1,7 +1,7 @@
 // LoginScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert } from 'react-native';
-import { storeData } from '../common';
+import { getData, storeData } from '../common';
 
 
 const LoginScreen = ({ navigation }: any) => {
@@ -10,7 +10,7 @@ const LoginScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         const getUserLogin = async () => {
-            const userLogin = await storeData('userLogin');
+            const userLogin = await getData('userLogin');
             const userLoginParse = JSON.parse(userLogin as unknown as string);
             if(userLoginParse) {
                 navigation.navigate('Trang cá nhân');

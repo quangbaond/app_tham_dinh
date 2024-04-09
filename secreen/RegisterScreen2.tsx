@@ -5,6 +5,8 @@ import { useForm, Controller, set } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
+import { useIsFocused } from '@react-navigation/native'
+
 
 const RegisterScreen2 = ({ navigation }: any) => {
     const [matTruoc, setMatTruoc] = useState('');
@@ -15,6 +17,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
     const [kqMatSau, setKqMatSau] = useState('');
     const [next, setNext] = useState(false);
     const [userLogin, setUserLogin] = useState<any>(null);
+    const isFocused = useIsFocused();
 
     const data = [
         {
@@ -49,7 +52,8 @@ const RegisterScreen2 = ({ navigation }: any) => {
         const saveData = async () => {
             const userInfo = await getData('userInfo');
             const userData = await getData('userLogin');
-            if (!userLogin) {
+            const userDataParse = JSON.parse(userData as string);
+            if (!userDataParse) {
                 Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
                 navigation.navigate('Đăng nhập');
                 return;
@@ -64,7 +68,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
             }
         }
         saveData()
-    }, []);
+    }, [isFocused]);
 
     useEffect(() => {
         if (matTruoc) {

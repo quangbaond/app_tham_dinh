@@ -124,6 +124,9 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                 }
                 if(data.user.user_movables.length <= 0  || data.user.user_san_estates.length <= 0) {
                     navigation.navigate('Tài sản');
+                } else if(data.user.user_loan_amounts.length <= 0) {
+                    // navigation.navigate('Trang cá nhân');
+                    navigation.navigate('Khoản vay');
                 } else {
                     navigation.navigate('Trang cá nhân');
                 }
