@@ -16,6 +16,7 @@ import HomeSecreen from './secreen/HomeSecreen';
 import { RegisterSecreen3 } from './secreen/RegisterSecreen3';
 import KhoanVaySecreen from './secreen/KhoanVaySecreen';
 import HistoryScreen from './secreen/HistoryScreen';
+import SettingSecreen from './secreen/SettingSecreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,8 @@ function App(): React.JSX.Element {
         <Stack.Screen name="Khoản vay" component={KhoanVaySecreen} />
         <Stack.Screen name="Đăng ký vay" component={RegisterSecreen7} />
         <Stack.Screen name="Trang cá nhân" component={HomeSecreen} />
+        <Stack.Screen name="Cài đặt" component={SettingSecreen} />
+
         <Stack.Screen name="Lịch sử trả nợ" component={HistoryScreen} initialParams={{itemId: 0}}/>
 
       </Stack.Navigator>

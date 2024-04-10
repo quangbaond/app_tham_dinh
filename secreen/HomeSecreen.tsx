@@ -3,6 +3,7 @@ import { View, Text, Alert, ImageBackground, StyleSheet, Button, TouchableOpacit
 import { storeData, getData } from '../common';
 import { useIsFocused } from '@react-navigation/native'
 import UserAvatar from 'react-native-user-avatar';
+import Icon from 'react-native-vector-icons/AntDesign';
 const HomeSecreen = ({ navigation }: any) => {
     const isFocused = useIsFocused()
 
@@ -91,7 +92,7 @@ const HomeSecreen = ({ navigation }: any) => {
                 userLogin ?
                     <View>
                         <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                            <View style={{ backgroundColor: '#3366CC', padding: 10,  flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                                     <View style={{ width: 30 }}>
                                         <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
@@ -100,6 +101,14 @@ const HomeSecreen = ({ navigation }: any) => {
                                         <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                                     </View>
                                 </View>
+                                <View style={{ alignSelf: 'center' }}>
+                                    <TouchableOpacity onPress={() => {
+                                        navigation.navigate('Cài đặt');
+                                    }}>
+                                        <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                                    </TouchableOpacity>
+                                </View>
                             </View>
 
                             <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
@@ -107,11 +116,11 @@ const HomeSecreen = ({ navigation }: any) => {
                             </View>
                             <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
                                 <TouchableOpacity style={{ backgroundColor: '#3366CC', width: 120, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }}>
-                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center', padding: 20 }}>ABB</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center', padding: 15 }}>ABB</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#3366CC', width: 100, padding: 15, borderWidth: 1, borderColor: '#fff',borderRadius: 15}} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#3366CC', width: 100, padding: 15, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
                                     navigation.navigate('Xác thực thông tin cơ bản');
                                 }}>
                                     <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center' }}>Pháp Lý</Text>
@@ -146,7 +155,7 @@ const HomeSecreen = ({ navigation }: any) => {
                                 <TouchableOpacity style={{ backgroundColor: '#3366CC', width: '100%', padding: 10, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
                                     Alert.alert('Thông báo', 'Chức năng đang phát triển');
                                 }}>
-                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center',  }}>Bán hàng thêm như bảo hiểm</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center', }}>Bán hàng thêm như bảo hiểm</Text>
                                 </TouchableOpacity>
                             </View>
 
