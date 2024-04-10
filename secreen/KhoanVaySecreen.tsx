@@ -157,21 +157,21 @@ export const KhoanVaySecreen = ({navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    {/* <Text style={{ color: '#222222', fontSize: 20, marginBottom: 5 }}>{'Thông tin khoản vay'}</Text> */}
+                    {/* <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5 }}>{'Thông tin khoản vay'}</Text> */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
-                        <Text style={{ color: '#222222', fontSize: 18, fontWeight: '500' }}>{'Khoản vay'}</Text>
+                        <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '500' }}>{'Khoản vay'}</Text>
                         {/* <Button title="Thêm" onPress={() => navigation.navigate('Đăng ký vay')} /> */}
                         <TouchableOpacity 
-                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                         onPress={() => navigation.navigate('Đăng ký vay')}>
-                            <Text style={{ color: '#222222', textAlign: 'center', fontSize: 12 }}>{'Đăng ký khoản vay mới'}</Text>
+                            <Text style={{ color: '#ffffff', textAlign: 'center', fontSize: 12 }}>{'Đăng ký khoản vay mới'}</Text>
                         </TouchableOpacity>
 
                     </View>
-                    <Text style={{ color: '#222222', fontSize: 10, marginBottom: 5, fontWeight: '500' }}>{'(Để xem chi tiết lịch trả nợ, hãy chạm vào dòng cần xem)'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 10, marginBottom: 5, fontWeight: '500' }}>{'(Để xem chi tiết lịch trả nợ, hãy chạm vào dòng cần xem)'}</Text>
                     <View>
                         <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
                             <Row data={tableHead} style={styles.head} textStyle={styles.text} />
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.2)',
     },
     // input disabled
@@ -284,6 +284,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
 
-    head: { height: 40, backgroundColor: '#FFDF00', textAlign: 'center' },
-    text: { color: '#222222', fontSize: 10, textAlign: 'center', backgroundColor: '#fff' }
+    head: { height: 40, backgroundColor: '#3366CC', textAlign: 'center' },
+    text: { color: '#ffffff', fontSize: 10, textAlign: 'center', backgroundColor: '#fff' }
 });

@@ -253,25 +253,25 @@ const RegisterSecreen6 = ({ navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
-                    <View style={{ backgroundColor: '#FFDF00', padding: 10,  flexDirection: 'row', justifyContent: 'space-between' }}>
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
+                    <View style={{ backgroundColor: '#3366CC', padding: 10,  flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                                     <View style={{ width: 30 }}>
-                                        <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#222222'} />
+                                        <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
                                     </View>
                                     <View style={{ alignSelf: 'center' }}>
-                                        <Text style={{ color: '#222222', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
+                                        <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                                     </View>
                                 </View>
                             </View>
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    <Text style={{ color: '#222222', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Bất động sản'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Bất động sản'}</Text>
                     <>
                         {defaultValuesForm.bat_dong_san.map((item: any, index: number) => (
                             <>
                                 <View key={index}>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ'}</Text>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -280,7 +280,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 placeholder="Địa chỉ"
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#222222"
+                                                placeholderTextColor="#ffffff"
                                                 editable={true}
                                                 keyboardType='default'
                                                 multiline={true}
@@ -310,7 +310,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                     
                                                 }} /> */}
                                                 <TouchableOpacity
-                                                    style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                                    style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                                     onPress={() => {
                                                         setDefaultValues((prew: any) => {
                                                             const newValues = { ...prew };
@@ -319,13 +319,13 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                         });
                                                     }}
                                                 >
-                                                    <Text style={{ color: '#222222', fontSize: 14,  textAlign:'center' }}>{'Xóa ảnh'}</Text>
+                                                    <Text style={{ color: '#ffffff', fontSize: 14,  textAlign:'center' }}>{'Xóa ảnh'}</Text>
                                                     </TouchableOpacity>
                                             </View>
                                             : (
                                                 <View style={{ marginBottom: 5 }}>
                                                     <TouchableOpacity
-                                                        style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                                        style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                                         onPress={async () => {
                                                             try {
                                                                 const granted = await PermissionsAndroid.request(
@@ -375,7 +375,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                             }
                                                         }}
                                                     >
-                                                        <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Hình ảnh'}</Text>
+                                                        <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Hình ảnh'}</Text>
                                                     </TouchableOpacity>
                                                 </View>
 
@@ -394,7 +394,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 });
                                             }} /> */}
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     setDefaultValues((prew: any) => {
                                                         const newValues = { ...prew };
@@ -403,14 +403,14 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                     });
                                                 }}
                                             >
-                                                <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Xoá bất động sản'}</Text>
+                                                <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Xoá bất động sản'}</Text>
                                             </TouchableOpacity>
                                         </View>
                                     ) : null
                                 }
 
                                 <View style={{
-                                    borderBottomColor: '#FFDF00',
+                                    borderBottomColor: '#3366CC',
                                     borderBottomWidth: 2,
                                     marginBottom: 10,
                                     marginTop: 10
@@ -421,7 +421,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
 
                         <View style={{ marginBottom: 5 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={() => {
                                     setDefaultValues((prew: any) => {
                                         const newValues = { ...prew };
@@ -434,18 +434,18 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     });
                                 }}
                             >
-                                <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Thêm bất động sản'}</Text>
+                                <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Thêm bất động sản'}</Text>
                             </TouchableOpacity>
                         </View>
                     </>
 
-                    <Text style={{ color: '#222222', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Động sản'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Động sản'}</Text>
 
                     <>
                         {defaultValuesForm.dong_san.map((item: any, index: number) => (
                             <>
                                 <View key={index}>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Loại động sản (Xe máy, Ô tô,...)'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Loại động sản (Xe máy, Ô tô,...)'}</Text>
 
                                     <Controller
                                         control={control}
@@ -455,7 +455,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 placeholder="Xe máy, Ô tô,..."
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#222222"
+                                                placeholderTextColor="#ffffff"
                                                 editable={true}
                                                 keyboardType='default'
                                             />
@@ -464,7 +464,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                         rules={{ required: { value: true, message: "Loại tài sản không được bỏ trống." } }}
                                     />
                                     {errors.dong_san?.[index]?.loai_tai_san && <Text style={{ color: 'red' }}>{errors.dong_san?.[index]?.loai_tai_san?.message}</Text>}
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ'}</Text>
                                     
                                     <Controller
                                         control={control}
@@ -474,7 +474,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 placeholder="Địa chỉ."
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#222222"
+                                                placeholderTextColor="#ffffff"
                                                 editable={true}
                                                 keyboardType='default'
                                                 multiline={true}
@@ -497,7 +497,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                             <View style={{ marginBottom: 10 }}>
 
                                                 <TouchableOpacity
-                                                    style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                                    style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                                     onPress={() => {
                                                         setDefaultValues((prew: any) => {
                                                             const newValues = { ...prew };
@@ -506,7 +506,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                         });
                                                     }}
                                                 >
-                                                    <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Xóa ảnh'}</Text>
+                                                    <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Xóa ảnh'}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             : (
@@ -559,7 +559,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                     }
                                                     } /> */}
                                                     <TouchableOpacity
-                                                        style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                                        style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                                         onPress={async () => {
                                                             try {
                                                                 const granted = await PermissionsAndroid.request(
@@ -607,7 +607,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                             }
                                                         }}
                                                     >
-                                                        <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Hình ảnh'}</Text>
+                                                        <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Hình ảnh'}</Text>
                                                     </TouchableOpacity>
                                                 </View>
 
@@ -619,7 +619,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     defaultValuesForm.dong_san.length > 1 && (
                                         <View style={{ marginBottom: 10 }}>
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     setDefaultValues((prew: any) => {
                                                         const newValues = { ...prew };
@@ -628,14 +628,14 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                     });
                                                 }}
                                             >
-                                                <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Xoá động sản'}</Text>
+                                                <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Xoá động sản'}</Text>
                                             </TouchableOpacity>
                                         </View>
                                     )
                                 }
 
                                 <View style={{
-                                    borderBottomColor: '#FFDF00',
+                                    borderBottomColor: '#3366CC',
                                     borderBottomWidth: 2,
                                     marginBottom: 10,
                                     marginTop: 10
@@ -647,7 +647,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
 
                         <View style={{ marginBottom: 10 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={() => {
                                     setDefaultValues((prew: any) => {
                                         const newValues = { ...prew };
@@ -661,7 +661,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     });
                                 }}
                             >
-                                <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Thêm động sản'}</Text>
+                                <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Thêm động sản'}</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -671,10 +671,10 @@ const RegisterSecreen6 = ({ navigation }: any) => {
 
                     <View style={{ marginBottom: 30 }}>
                         <TouchableOpacity
-                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                             onPress={handleSubmit(submit)}
                         >
-                            <Text style={{ textAlign: 'center', color: '#222' }}>Tiếp tục</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
 
     input: {
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
         borderRadius: 15,
         width: '100%',
         marginBottom: 10,
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.4)',
     },
     // input disabled

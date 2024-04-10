@@ -54,13 +54,13 @@ const LoginScreen = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                <Text style={{ color: '#222222', fontSize: 20, marginBottom: 10, textShadowColor: 'rgba(0, 0, 0, 0.75)',  fontWeight: "500"}}>{'Đăng nhập'}</Text>
+                <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 10, textShadowColor: 'rgba(0, 0, 0, 0.75)',  fontWeight: "500"}}>{'Đăng nhập'}</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Số điện thoại"
                     value={username}
                     onChangeText={setUsername}
-                    placeholderTextColor="#222222"
+                    placeholderTextColor="#ffffff"
                     returnKeyLabel='next'
                 />
                 <TextInput
@@ -68,23 +68,23 @@ const LoginScreen = ({ navigation }: any) => {
                     placeholder="Mật khẩu"
                     value={password}
                     onChangeText={setPassword}
-                    placeholderTextColor="#222222"
+                    placeholderTextColor="#ffffff"
                     secureTextEntry
                     returnKeyLabel='done'
                 />
                     {/* <Button title="Đăng nhập" onPress={handleLogin} /> */}
                     <View>
                         <TouchableOpacity
-                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={handleLogin}
                         >
-                            <Text style={{ textAlign: 'center', color: '#222' }}>Đăng nhập</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Đăng nhập</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff'}}
+                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff'}}
                             onPress={() => navigation.navigate('Đăng ký')}
                         >
-                            <Text style={{ textAlign: 'center', color: '#222' }}>Chưa có tài khoản? Đăng ký ngay</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Chưa có tài khoản? Đăng ký ngay</Text>
                         </TouchableOpacity>
                     </View>
                     
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
         borderRadius: 5,
         width: '90%',
         marginBottom: 20,
         padding: 5,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.5)',
     }
 });

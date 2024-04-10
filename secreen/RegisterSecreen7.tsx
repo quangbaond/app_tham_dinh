@@ -157,17 +157,17 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    <Text style={{ color: '#222222', fontSize: 18, marginBottom: 5, fontWeight: '700' }}>{'Đăng ký vay'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 18, marginBottom: 5, fontWeight: '700' }}>{'Đăng ký vay'}</Text>
                     <>
 
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Bạn muốn vay bao nhiêu?'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Bạn muốn vay bao nhiêu?'}</Text>
                                     <TextInput
                                         style={errors.so_tien_vay ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         value={value}
@@ -218,7 +218,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                         //     setMoney(parseInt(currency.replace(/,/g, '')));
                                             
                                         // }}
-                                        placeholderTextColor="#222222"
+                                        placeholderTextColor="#ffffff"
                                         placeholder='15,000,000'
                                         keyboardType='numeric'
                                         editable={true}
@@ -234,7 +234,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Thời hạn vay'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Thời hạn vay'}</Text>
                                     {/* // select dropdown */}
                                     <SelectDropdown
                                         disabled={false}
@@ -299,7 +299,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                         {
                             tableDataMonth.length > 0 &&
                             <>
-                                <Text style={{ color: '#222222', fontSize: 18, marginBottom: 5, marginTop: 5, fontWeight: '700' }}>{'Dự kiến'}</Text>
+                                <Text style={{ color: '#ffffff', fontSize: 18, marginBottom: 5, marginTop: 5, fontWeight: '700' }}>{'Dự kiến'}</Text>
                                 <View>
                                     <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
                                         <Row data={tableHeadMonth} style={styles.head} textStyle={styles.text} />
@@ -307,7 +307,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                     </Table>
                                 </View>
                                 <View style={{
-                                    borderBottomColor: '#FFDF00',
+                                    borderBottomColor: '#3366CC',
                                     borderBottomWidth: 2,
                                     marginBottom: 10,
                                     marginTop: 10
@@ -317,7 +317,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
 
 
 
-                        {/* <Text style={{ color: '#222222', fontSize: 20, marginBottom: 20 }}>{'Lịch sử vay'}</Text>
+                        {/* <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 20 }}>{'Lịch sử vay'}</Text>
 
                         <View>
                             <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
@@ -329,10 +329,10 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
 
                         <View style={{ marginBottom: 30 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={handleSubmit(submit)}
                             >
-                                <Text style={{ textAlign: 'center', color: '#222' }}>Tiếp tục</Text>
+                                <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
                             </TouchableOpacity>
                         </View>
                     </>
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
 
     input: {
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
         borderRadius: 5,
         width: '100%',
         marginBottom: 10,
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.4)',
     },
     // input disabled
@@ -381,19 +381,19 @@ const styles = StyleSheet.create({
     dropdownButtonStyle: {
         height: 40,
         backgroundColor: 'rgba(255,255,255,0.2)',
-        color: '#222222',
+        color: '#ffffff',
         borderRadius: 7,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 12,
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
     },
     dropdownButtonTxtStyle: {
         flex: 1,
         fontSize: 16,
-        color: '#222222',
+        color: '#ffffff',
     },
     dropdownButtonArrowStyle: {
         fontSize: 28,
@@ -425,6 +425,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
 
-    head: { height: 40, backgroundColor: '#FFDF00', textAlign: 'center' },
-    text: { margin: 6, color: '#222222', fontSize: 12, textAlign: 'center' }
+    head: { height: 40, backgroundColor: '#3366CC', textAlign: 'center' },
+    text: { margin: 6, color: '#ffffff', fontSize: 12, textAlign: 'center' }
 });

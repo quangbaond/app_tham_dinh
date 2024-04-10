@@ -178,26 +178,26 @@ const RegisterSecreen5 = ({ navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
-                <View style={{ backgroundColor: '#FFDF00', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
+                <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                         <View style={{ width: 30 }}>
-                            <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#222222'} />
+                            <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
                         </View>
                         <View style={{ alignSelf: 'center' }}>
-                            <Text style={{ color: '#222222', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
+                            <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                         </View>
                     </View>
                 </View>
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    <Text style={{ color: '#222222', fontSize: 20, marginBottom: 10, fontWeight: '700' }}>{'Thông tin tài chính'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 10, fontWeight: '700' }}>{'Thông tin tài chính'}</Text>
                     <>
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Thu nhập hàng tháng (VND)'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Thu nhập hàng tháng (VND)'}</Text>
                                     <TextInput
                                         style={errors.thu_nhap_hang_thang ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         value={value}
@@ -206,7 +206,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                             const currency = e.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                             onChange(currency);
                                         }}
-                                        placeholderTextColor="#222222"
+                                        placeholderTextColor="#ffffff"
                                         placeholder='15,000,000'
                                         keyboardType='numeric'
                                         editable={true}
@@ -216,8 +216,8 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             )}
                             name="thu_nhap_hang_thang"
                         />
-                        <Text style={{ color: '#222222', fontSize: 14, marginBottom: 2, fontWeight: '500' }}>{'Sao kê TK nhận lương'}</Text>
-                        <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '700' }}>{'(Hình ảnh sao kê 6 tháng Ebank)'}</Text>
+                        <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 2, fontWeight: '500' }}>{'Sao kê TK nhận lương'}</Text>
+                        <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '700' }}>{'(Hình ảnh sao kê 6 tháng Ebank)'}</Text>
 
                         {iamges.map((item: any, index: number) => {
                             return (
@@ -226,12 +226,12 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                         <>
                                             <Image key={index} source={{ uri: item }} style={{ height: 150, marginBottom: 10, borderWidth: 1 }} />
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     const newImages = iamges.filter((item: any, i: number) => i !== index);
                                                     setImages(newImages);
                                                 }} >
-                                                <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Xóa ảnh'}</Text>
+                                                <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Xóa ảnh'}</Text>
                                             </TouchableOpacity>
                                         </>
                                     )}
@@ -239,7 +239,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             )
                         })}
                         <TouchableOpacity
-                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                             onPress={async () => {
                                 try {
                                     const granted = await PermissionsAndroid.request(
@@ -287,20 +287,20 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                 }
                             }}
                         >
-                            <Text style={{ color: '#222222', fontSize: 14, textAlign: 'center' }}>{'Chọn ảnh'}</Text>
+                            <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Chọn ảnh'}</Text>
                         </TouchableOpacity>
 
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Tên Công ty'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Tên Công ty'}</Text>
                                     <TextInput
                                         style={errors.dia_chi_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         placeholder="Tên công ty"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#222222"
+                                        placeholderTextColor="#ffffff"
                                         keyboardType='default'
                                         editable={true}
                                         multiline={true}
@@ -316,13 +316,13 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ công ty'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ công ty'}</Text>
                                     <TextInput
                                         style={errors.dia_chi_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         placeholder="Địa chỉ công ty"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#222222"
+                                        placeholderTextColor="#ffffff"
                                         keyboardType='default'
                                         editable={true}
                                         multiline={true}
@@ -338,13 +338,13 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại công ty'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại công ty'}</Text>
                                     <TextInput
                                         style={errors.so_dien_thoai_cong_ty ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         placeholder="Số điện thoại công ty"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#222222"
+                                        placeholderTextColor="#ffffff"
                                         editable={true}
                                     />
                                 </>
@@ -358,19 +358,19 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                         />
 
                         <View style={{
-                            borderBottomColor: '#FFDF00',
+                            borderBottomColor: '#3366CC',
                             borderBottomWidth: 2,
                             marginBottom: 10,
                             marginTop: 10
                         }} />
 
-                        <Text style={{ color: '#222222', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Thông tin người tham chiếu'}</Text>
+                        <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Thông tin người tham chiếu'}</Text>
 
                         {defaultValuesForm.so_dien_thoai_noi_lam_viec.map((item: any, index: number) => (
                             <>
                                 <View key={index}>
-                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Chức vụ'}</Text>
-                                    <Text style={{ color: '#FFDF00', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'(Giám đốc/Quản lý công ty/Kế toán/Gia đình nhân sự...)'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Chức vụ'}</Text>
+                                    <Text style={{ color: '#3366CC', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'(Giám đốc/Quản lý công ty/Kế toán/Gia đình nhân sự...)'}</Text>
 
                                     <Controller
                                         control={control}
@@ -425,7 +425,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                     />
                                     {errors.so_dien_thoai_noi_lam_viec?.[index]?.relationship && <Text style={{ color: 'red' }}>{errors.so_dien_thoai_noi_lam_viec?.[index]?.relationship?.message}</Text>}
 
-                                    <Text style={{ color: '#222222', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'Họ và tên'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'Họ và tên'}</Text>
 
                                     <Controller
                                         control={control}
@@ -435,7 +435,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                                 placeholder="Họ và tên"
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#222222"
+                                                placeholderTextColor="#ffffff"
                                                 defaultValue={item.name}
                                                 editable={true}
                                             />
@@ -444,7 +444,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                         rules={{ required: { value: true, message: "Họ và tên không được bỏ trống" } }}
                                     />
                                     {errors.so_dien_thoai_noi_lam_viec?.[index]?.name && <Text style={{ color: 'red' }}>{errors.so_dien_thoai_noi_lam_viec?.[index]?.name?.message}</Text>}
-                                    <Text style={{ color: '#222222', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại'}</Text>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -453,7 +453,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                                 placeholder="Số điện thoại"
                                                 value={value as string}
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#222222"
+                                                placeholderTextColor="#ffffff"
                                                 keyboardType='numeric'
                                                 defaultValue={item.phone}
                                                 editable={true}
@@ -468,7 +468,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                     {errors.so_dien_thoai_noi_lam_viec?.[index]?.phone && <Text style={{ color: 'red' }}>{errors.so_dien_thoai_noi_lam_viec?.[index]?.phone?.message}</Text>}
                                 </View>
                                 <View style={{
-                                    borderBottomColor: '#FFDF00',
+                                    borderBottomColor: '#3366CC',
                                     borderBottomWidth: 2,
                                     marginBottom: 10,
                                     marginTop: 10
@@ -489,7 +489,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                         }
                         <View style={{ marginBottom: 10 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={() => {
                                     const newValues = defaultValuesForm.so_dien_thoai_noi_lam_viec.concat({
                                         id: defaultValuesForm.so_dien_thoai_noi_lam_viec.length + 1,
@@ -500,15 +500,15 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                     setDefaultValues({ ...defaultValuesForm, so_dien_thoai_noi_lam_viec: newValues });
                                 }}
                             >
-                                <Text style={{ textAlign: 'center', color: '#222' }}>Thêm người tham chiếu</Text>
+                                <Text style={{ textAlign: 'center', color: '#fff' }}>Thêm người tham chiếu</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 30 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={handleSubmit(submit)}
                             >
-                                <Text style={{ textAlign: 'center', color: '#222' }}>Tiếp tục</Text>
+                                <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
                             </TouchableOpacity>
                         </View>
                     </>
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
 
     input: {
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
         borderRadius: 15,
         width: '100%',
         marginBottom: 5,
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         paddingLeft: 5,
         paddingRight: 2,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.4)',
     },
     // input disabled
@@ -555,19 +555,19 @@ const styles = StyleSheet.create({
     dropdownButtonStyle: {
         height: 35,
         backgroundColor: 'rgba(255,255,255,0.4)',
-        color: '#222222',
+        color: '#ffffff',
         borderRadius: 15,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 12,
         borderWidth: 1,
-        borderColor: '#FFDF00',
+        borderColor: '#ffffff',
     },
     dropdownButtonTxtStyle: {
         flex: 1,
         fontSize: 16,
-        color: '#222222',
+        color: '#ffffff',
     },
     dropdownButtonArrowStyle: {
         fontSize: 28,

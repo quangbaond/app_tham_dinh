@@ -164,11 +164,11 @@ export const HistoryScreen = ({ route, navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    {/* <Text style={{ color: '#222222', fontSize: 20, marginBottom: 5 }}>{'Thông tin khoản vay'}</Text> */}
-                    <Text style={{ color: '#222222', fontSize: 18, marginBottom: 5, fontWeight: '500' }}>{'Khoản vay'}</Text>
+                    {/* <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5 }}>{'Thông tin khoản vay'}</Text> */}
+                    <Text style={{ color: '#ffffff', fontSize: 18, marginBottom: 5, fontWeight: '500' }}>{'Khoản vay'}</Text>
 
                     <View>
                         <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
@@ -180,7 +180,7 @@ export const HistoryScreen = ({ route, navigation }: any) => {
                         {
                             tableDataMonth.length > 0 &&
                             <>
-                                <Text style={{ color: '#222222', fontSize: 18, marginBottom: 5, marginTop: 5 }}>{
+                                <Text style={{ color: '#ffffff', fontSize: 18, marginBottom: 5, marginTop: 5 }}>{
                                     khoan_vay?.status === 0 ? 'Dự kiến' : khoan_vay?.status === 1 ? 'Lịch trả' : 'Lịch trả'
                                 }</Text>
                                 <View>
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.2)',
     },
     // input disabled
@@ -307,6 +307,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
 
-    head: { height: 40, backgroundColor: '#FFDF00', textAlign: 'center' },
-    text: { color: '#222222', fontSize: 10, textAlign: 'center', backgroundColor: '#fff' }
+    head: { height: 40, backgroundColor: '#3366CC', textAlign: 'center' },
+    text: { color: '#ffffff', fontSize: 10, textAlign: 'center', backgroundColor: '#fff' }
 });

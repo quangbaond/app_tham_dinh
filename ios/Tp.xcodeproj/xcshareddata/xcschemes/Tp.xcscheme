@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
+               #3366CCprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Tp.app"
-               #FFDF00printName = "Tp"
+               #3366CCprintName = "Tp"
                ReferencedContainer = "container:Tp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               #FFDF00printIdentifier = "00E356ED1AD99517003FC87E"
+               #3366CCprintIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "TpTests.xctest"
-               #FFDF00printName = "TpTests"
+               #3366CCprintName = "TpTests"
                ReferencedContainer = "container:Tp.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -54,9 +54,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
+            #3366CCprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Tp.app"
-            #FFDF00printName = "Tp"
+            #3366CCprintName = "Tp"
             ReferencedContainer = "container:Tp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
+            #3366CCprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Tp.app"
-            #FFDF00printName = "Tp"
+            #3366CCprintName = "Tp"
             ReferencedContainer = "container:Tp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -137,10 +137,10 @@ const RegisterScreen4 = ({ navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#222222' }}></Spinner>}
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
 
                 <ScrollView style={{ padding: 20 }}>
-                    <Text style={{ color: '#222222', fontSize: 25, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
+                    <Text style={{ color: '#ffffff', fontSize: 25, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
                     <View style={{ marginBottom: 10 }}>
                         <Button title="Mặt trước BLX" onPress={async () => {
                             try {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
         width: '90%',
         marginBottom: 20,
         padding: 10,
-        color: '#222222',
+        color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.2)',
     }
 
