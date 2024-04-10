@@ -116,7 +116,9 @@ const HomeSecreen = ({ navigation }: any) => {
                             </View>
                             <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
                                 <TouchableOpacity style={{ backgroundColor: '#3366CC', width: 120, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }}>
-                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center', padding: 15 }}>ABB</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, textAlign: 'center', padding: 15 }}>{
+                                        userLogin?.xep_hang_tin_dung ? userLogin?.xep_hang_tin_dung : 'Chưa xếp hạng'
+                                    }</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
