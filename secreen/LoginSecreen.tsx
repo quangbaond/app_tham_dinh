@@ -1,6 +1,6 @@
 // LoginScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert } from 'react-native';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert, TouchableOpacity } from 'react-native';
 import { getData, storeData } from '../common';
 
 
@@ -54,28 +54,40 @@ const LoginScreen = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng nhập'}</Text>
+                <Text style={{ color: '#222222', fontSize: 20, marginBottom: 10, textShadowColor: 'rgba(0, 0, 0, 0.75)',  fontWeight: "500"}}>{'Đăng nhập'}</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Số điện thoại"
                     value={username}
                     onChangeText={setUsername}
-                    placeholderTextColor="#fff"
+                    placeholderTextColor="#222222"
+                    returnKeyLabel='next'
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Mật khẩu"
                     value={password}
                     onChangeText={setPassword}
-                    placeholderTextColor="#fff"
+                    placeholderTextColor="#222222"
                     secureTextEntry
+                    returnKeyLabel='done'
                 />
-                    <Button title="Đăng nhập" onPress={handleLogin} />
-                    <Text 
-                        onPress={() => navigation.navigate('Đăng ký')}
-                        style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
-                        Chưa có tài khoản? Đăng ký ngay
-                    </Text>
+                    {/* <Button title="Đăng nhập" onPress={handleLogin} /> */}
+                    <View>
+                        <TouchableOpacity
+                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            onPress={handleLogin}
+                        >
+                            <Text style={{ textAlign: 'center', color: '#222' }}>Đăng nhập</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff'}}
+                            onPress={() => navigation.navigate('Đăng ký')}
+                        >
+                            <Text style={{ textAlign: 'center', color: '#222' }}>Chưa có tài khoản? Đăng ký ngay</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
             </ImageBackground>
         </View>
     );
@@ -84,7 +96,7 @@ const LoginScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
 
     image: {
-        flex: 1,
+        // flex: 1,
         justifyContent: "center",
         width: '100%',
         height: '100%',
@@ -93,6 +105,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        justifyContent: "center",
+
         fontFamily: 'Roboto',
     },
     actions: {
@@ -102,16 +116,14 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#FFDF00',
         borderRadius: 5,
         width: '90%',
         marginBottom: 20,
-        padding: 10,
-        color: '#fff',
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        padding: 5,
+        color: '#222222',
+        backgroundColor: 'rgba(255,255,255,0.5)',
     }
-
-
 });
 
 

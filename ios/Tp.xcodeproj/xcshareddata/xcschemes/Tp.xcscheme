@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+               #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Tp.app"
-               BlueprintName = "Tp"
+               #FFDF00printName = "Tp"
                ReferencedContainer = "container:Tp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
+               #FFDF00printIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "TpTests.xctest"
-               BlueprintName = "TpTests"
+               #FFDF00printName = "TpTests"
                ReferencedContainer = "container:Tp.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -54,9 +54,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Tp.app"
-            BlueprintName = "Tp"
+            #FFDF00printName = "Tp"
             ReferencedContainer = "container:Tp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            #FFDF00printIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Tp.app"
-            BlueprintName = "Tp"
+            #FFDF00printName = "Tp"
             ReferencedContainer = "container:Tp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

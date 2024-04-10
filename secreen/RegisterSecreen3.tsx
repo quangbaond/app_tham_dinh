@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, ScrollView, TouchableOpacity } from 'react-native';
 import { useForm, Controller } from "react-hook-form";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, storeData } from '../common';
 import SelectDropdown from 'react-native-select-dropdown';
+import UserAvatar from 'react-native-user-avatar';
+import { useIsFocused } from '@react-navigation/native'
 
 export const RegisterSecreen3 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
+    const isFocused = useIsFocused()
 
     const [defaultValuesForm, setDefaultValues] = useState({
         name: "",
@@ -30,13 +33,43 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
             }
         ]
     });
+    const [userLogin, setUserLogin] = React.useState<any>(null);
+    useEffect(() => {
+        const getUserLogin = async () => {
+            const userLogin = await getData('userLogin');
+            if (!userLogin) {
+                Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+                navigation.navigate('Đăng nhập');
+                return;
+            }
+
+            const token = JSON.parse(userLogin).token;
+
+            fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((response) => response.json())
+                .then((data) => {
+                    setUserLogin(data);
+                    console.log(data);
+
+                }).catch((error) => {
+                    if (error) {
+                        Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
+                        navigation.navigate('Đăng nhập');
+                    }
+                })
+        }
+        getUserLogin();
+    }, [isFocused]);
 
 
     const {
         control, handleSubmit, formState: { errors },
     } = useForm({
         defaultValues: async () => {
-
             const userLogin = await getData('userLogin');
             const token = JSON.parse(userLogin ?? '').token;
             const result = await fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
@@ -45,12 +78,31 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                     'Authorization': `Bearer ${token}`,
                 }
             }).then((response) => response.json())
+            
+            setDefaultValues({
+                ...defaultValuesForm,
+                phone: result.phone,
+                ...result?.user_identifications,
+                phone_reference: result?.user_phone_references?.map((item: any) => {  
+                    return {
+                        relationship: item.relationship,
+                        name: item.name,
+                        phone: item.phone,
+                    }
+                }),
+            });
 
             return {
                 ...defaultValuesForm,
                 phone: result.phone,
-                ...result?.userIdentifications,
-                phone_reference: result?.userPhoneReferences,
+                ...result?.user_identifications,
+                phone_reference: result?.user_phone_references?.map((item: any) => {  
+                    return {
+                        relationship: item.relationship,
+                        name: item.name,
+                        phone: item.phone,
+                    }
+                }),
             };
         }
     });
@@ -59,7 +111,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
 
         setLoading(true);
         console.log(data);
-        
+
         const userLogin = await getData('userLogin');
         const token = JSON.parse(userLogin ?? '').token;
         fetch('https://tp.tucanhcomputer.vn/api/update-user', {
@@ -73,9 +125,9 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson);
-                
+
                 setLoading(false);
-                if(responseJson.error) {
+                if (responseJson.error) {
                     Alert.alert('Lỗi', responseJson.error);
                     return;
                 }
@@ -99,21 +151,31 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
             <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#FFF' }}></Spinner>}
+                    textStyle={{ color: '#fff' }}></Spinner>}
+                <View style={{ backgroundColor: '#FFDF00', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                        <View style={{ width: 30 }}>
+                            <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#222222'} />
+                        </View>
+                        <View style={{ alignSelf: 'center' }}>
+                            <Text style={{ color: '#222222', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
+                        </View>
+                    </View>
+                </View>
 
-                <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
-                    <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
+                <ScrollView style={{ padding: 10, borderColor: '#ccc', borderWidth: 1 }}>
+                    <Text style={{ color: '#222222', fontSize: 18, marginBottom: 10, fontWeight: '700' }}>{'Thông tin cơ bản'}</Text>
                     <>
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Họ và tên'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Họ và tên'}</Text>
                                     <TextInput
-                                        style={errors.name ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
+                                        style={errors.name ? [styles.input, { borderColor: 'red' }] : [styles.input]}
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         editable={true}
                                         returnKeyLabel="next" />
                                 </>
@@ -124,13 +186,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số điện thoại'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại'}</Text>
                                     <TextInput
                                         style={errors.phone ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Số điện thoại"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         keyboardType='numeric'
                                         editable={true} />
                                 </>
@@ -142,13 +204,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số CCCD/CMND'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Số CCCD/CMND'}</Text>
                                     <TextInput
                                         style={errors.cccd ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Số CCCD"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         keyboardType='numeric'
                                         editable={true} />
                                 </>
@@ -160,13 +222,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Địa chỉ thường trú'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ thường trú'}</Text>
                                     <TextInput
                                         style={errors.address ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Địa chỉ thường trú"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         editable={true} />
                                 </>
 
@@ -177,12 +239,12 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Địa chỉ hiện tại'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ hiện tại'}</Text>
                                     <TextInput
                                         style={errors.address_now ? [styles.input, { borderColor: 'red' }] : styles.input}
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         editable={true}
                                         multiline={true}
                                         numberOfLines={2} />
@@ -196,13 +258,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Ngày sinh'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Ngày sinh'}</Text>
                                     <TextInput
                                         style={errors.birthday ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         placeholder="Ngày sinh"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         keyboardType='numeric'
                                         editable={true} />
                                 </>
@@ -214,12 +276,12 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Ngày cấp'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Ngày cấp'}</Text>
                                     <TextInput
                                         style={errors.issue_date ? [styles.input, { borderColor: 'red' }] : [styles.input, styles.inputDisabled]}
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         keyboardType='default'
                                         editable={true} />
                                 </>
@@ -231,13 +293,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Mã số BHXH'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Mã số BHXH'}</Text>
                                     <TextInput
                                         style={errors.msbhxh ? [styles.input, { borderColor: 'red' }] : styles.input}
                                         placeholder="Mã số BHXH"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         keyboardType='numeric'
                                         editable={true} />
                                 </>
@@ -250,13 +312,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Facebook'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Facebook'}</Text>
                                     <TextInput
                                         style={errors.facebook ? [styles.input, { borderColor: 'red' }] : styles.input}
                                         placeholder="Facebook"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         editable={true} />
                                 </>
 
@@ -267,13 +329,13 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Zalo'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Zalo'}</Text>
                                     <TextInput
                                         style={errors.zalo ? [styles.input, { borderColor: 'red' }] : styles.input}
                                         placeholder="Zalo"
                                         value={value}
                                         onChangeText={onChange}
-                                        placeholderTextColor="#fff"
+                                        placeholderTextColor="#222222"
                                         editable={true} />
                                 </>
 
@@ -281,18 +343,19 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             name="zalo" />
 
                         <View style={{
-                            borderBottomColor: 'white',
-                            borderBottomWidth: StyleSheet.hairlineWidth,
-                            marginBottom: 20,
-                            marginTop: 20
+                            borderBottomColor: '#FFDF00',
+                            borderBottomWidth: 2,
+
+                            marginBottom: 10,
+                            marginTop: 10
                         }} />
 
-                        <Text style={{ color: '#fff', fontSize: 20, marginBottom: 20 }}>{'Thông tin người thân'}</Text>
+                        <Text style={{ color: '#222222', fontSize: 18, marginBottom: 10, fontWeight: '700' }}>{'Thông tin người thân'}</Text>
 
                         {defaultValuesForm.phone_reference.map((item: any, index: number) => (
                             <>
                                 <View key={index}>
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Quan hệ'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Quan hệ'}</Text>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -326,6 +389,14 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                                     onChange(selectedItem.value);
 
                                                 }}
+                                                defaultValueByIndex={
+                                                    value === 'Mẹ' ? 0 :
+                                                    value === 'Bố' ? 1 :
+                                                    value === 'Anh trai' ? 2 :
+                                                    value === 'Em trai' ? 3 :
+                                                    value === 'Chị gái' ? 4 :
+                                                    value === 'Em gái' ? 5 : 0
+                                                }
                                                 renderButton={(selectedItem, isOpened) => {
                                                     return (
                                                         <View style={styles.dropdownButtonStyle}>
@@ -348,7 +419,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                         rules={{ required: { value: true, message: "Quan hệ không được bỏ trống" } }} />
                                     {errors.phone_reference?.[index]?.relationship && <Text style={{ color: 'red' }}>{errors.phone_reference[index]?.relationship?.message}</Text>}
 
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Họ và tên'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Họ và tên'}</Text>
 
                                     <Controller
                                         control={control}
@@ -358,14 +429,14 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                                 placeholder="Họ và tên"
                                                 value={value as string} // Cast value to string
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#fff"
+                                                placeholderTextColor="#222222"
                                                 defaultValue={item.name}
                                                 editable={true} />
                                         )}
                                         name={`phone_reference.${index}.name`}
                                         rules={{ required: { value: true, message: "Họ và tên không được bỏ trống" } }} />
                                     {errors.phone_reference?.[index]?.name && <Text style={{ color: 'red' }}>{errors.phone_reference[index].name?.message}</Text>}
-                                    <Text style={{ color: '#fff', fontSize: 14, marginBottom: 10 }}>{'Số điện thoại'}</Text>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Số điện thoại'}</Text>
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -374,7 +445,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                                 placeholder="Số điện thoại"
                                                 value={value as string}
                                                 onChangeText={onChange}
-                                                placeholderTextColor="#fff"
+                                                placeholderTextColor="#222222"
                                                 keyboardType='numeric'
                                                 defaultValue={item.phone}
                                                 editable={true} />
@@ -387,10 +458,10 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                     {errors.phone_reference?.[index]?.phone && <Text style={{ color: 'red' }}>{errors.phone_reference[index].phone?.message}</Text>}
                                 </View>
                                 <View style={{
-                                    borderBottomColor: 'white',
-                                    borderBottomWidth: StyleSheet.hairlineWidth,
-                                    marginBottom: 20,
-                                    marginTop: 20
+                                    borderBottomColor: '#FFDF00',
+                                    borderBottomWidth: 2,
+                                    marginBottom: 10,
+                                    marginTop: 10
                                 }} />
 
                             </>
@@ -419,31 +490,40 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                 }} />
                             </View>}
                         <View style={{ marginBottom: 10 }}>
-                            <Button title="Thêm người thân" onPress={() => {
-                                // get data from local storage
-                                const getDataFromStorage = async () => {
-                                    const data = await getData('user');
-                                    if (data) {
-                                        const newData = {
-                                            ...defaultValuesForm,
-                                            ...JSON.parse(data),
-                                        };
-                                        newData.phone_reference.push({
-                                            name: "",
-                                            phone: "",
-                                        });
-                                        setDefaultValues({
-                                            ...defaultValuesForm,
-                                            ...newData
-                                        });
-                                        storeData('user', JSON.stringify(newData));
-                                    }
-                                };
-                                getDataFromStorage();
-                            }} />
+                            <TouchableOpacity
+                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                onPress={() => {
+                                    // get data from local storage
+                                    const getDataFromStorage = async () => {
+                                        const data = await getData('user');
+                                        if (data) {
+                                            const newData = {
+                                                ...defaultValuesForm,
+                                                ...JSON.parse(data),
+                                            };
+                                            newData.phone_reference.push({
+                                                name: "",
+                                                phone: "",
+                                            });
+                                            setDefaultValues({
+                                                ...defaultValuesForm,
+                                                ...newData
+                                            });
+                                            storeData('user', JSON.stringify(newData));
+                                        }
+                                    };
+                                    getDataFromStorage();
+                                }}>
+                                <Text style={{ textAlign: 'center', color: '#222' }}>Thêm người thân</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 30 }}>
-                            <Button title="Tiếp tục" onPress={handleSubmit(submit)} />
+                        <TouchableOpacity
+                                style={{ backgroundColor: '#FFDF00', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                                onPress={handleSubmit(submit)}
+                            >
+                                <Text style={{ textAlign: 'center', color: '#222' }}>Tiếp tục</Text>
+                            </TouchableOpacity>
                         </View>
                     </>
                 </ScrollView>
@@ -472,37 +552,37 @@ const styles = StyleSheet.create({
 
     input: {
         borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
+        borderColor: '#FFDF00',
+        borderRadius: 15,
         width: '100%',
-        marginBottom: 5,
-        paddingTop: 5,
-        paddingBottom: 5,
+        marginBottom: 10,
+        paddingTop: 2,
+        paddingBottom: 2,
         paddingLeft: 10,
-        paddingRight: 10,
-        color: '#fff',
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        paddingRight: 2,
+        color: '#222222',
+        backgroundColor: 'rgba(255,255,255,0.4)',
     },
     // input disabled
     inputDisabled: {
-        backgroundColor: 'rgba(255,255,255,0.4)',
+        // backgroundColor: 'rgba(255,255,255,0.4)',
     },
     dropdownButtonStyle: {
-        height: 40,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        color: 'white',
-        borderRadius: 7,
+        height: 35,
+        backgroundColor: 'rgba(255,255,255,0.4)',
+        color: '#222222',
+        borderRadius: 15,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 12,
         borderWidth: 1,
-        borderColor: 'white',
+        borderColor: '#FFDF00',
     },
     dropdownButtonTxtStyle: {
         flex: 1,
         fontSize: 16,
-        color: 'white',
+        color: '#222222',
     },
     dropdownButtonArrowStyle: {
         fontSize: 28,

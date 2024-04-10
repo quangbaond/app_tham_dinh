@@ -58,7 +58,7 @@ const RegisterScreen = ({ navigation }: any) => {
             {
                 step1 ? (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                        <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
+                        <Text style={{ color: '#222222', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
@@ -67,7 +67,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     placeholder="Số điện thoại"
                                     value={value}
                                     onChangeText={onChange}
-                                    placeholderTextColor="#fff"
+                                    placeholderTextColor="#222222"
                                     keyboardType='numeric'
                                 />
                             )}
@@ -86,7 +86,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     placeholder="Mật khẩu"
                                     value={value}
                                     onChangeText={onChange}
-                                    placeholderTextColor="#fff"
+                                    placeholderTextColor="#222222"
                                     secureTextEntry
                                 />
                             )}
@@ -102,7 +102,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     placeholder="Nhập lại mật khẩu"
                                     value={value}
                                     onChangeText={onChange}
-                                    placeholderTextColor="#fff"
+                                    placeholderTextColor="#222222"
                                     secureTextEntry
                                 />
                             )}
@@ -114,14 +114,14 @@ const RegisterScreen = ({ navigation }: any) => {
                         <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)} />
                         <Text
                             onPress={() => navigation.navigate('Đăng nhập')}
-                            style={{ color: '#fff', marginTop: 20, textAlign: 'center' }}>
+                            style={{ color: '#222222', marginTop: 20, textAlign: 'center' }}>
                             Bạn đã có tài khoản? Đăng nhập ngay
                         </Text>
 
                     </ImageBackground>
                 ) : (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                        <Text style={{ color: '#fff', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
+                        <Text style={{ color: '#222222', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
 
                         <Controller
                             control={control}
@@ -131,7 +131,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                     placeholder="Otp"
                                     value={value}
                                     onChangeText={onChange}
-                                    placeholderTextColor="#fff"
+                                    placeholderTextColor="#222222"
                                     keyboardType='numeric'
                                 />
                             )}
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
         width: '90%',
         marginBottom: 20,
         padding: 10,
-        color: '#fff',
+        color: '#222222',
         backgroundColor: 'rgba(255,255,255,0.2)',
     }
 

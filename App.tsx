@@ -14,6 +14,8 @@ import RegisterSecreen6 from './secreen/RegisterSecreen6';
 import { RegisterSecreen7 } from './secreen/RegisterSecreen7';
 import HomeSecreen from './secreen/HomeSecreen';
 import { RegisterSecreen3 } from './secreen/RegisterSecreen3';
+import KhoanVaySecreen from './secreen/KhoanVaySecreen';
+import HistoryScreen from './secreen/HistoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,16 +24,19 @@ function App(): React.JSX.Element {
   const [loading, setLoading] = React.useState(false);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Trang cá nhân' screenOptions={{ headerShown: true }}>
-        <Stack.Screen name="Đăng nhập" component={LoginScreen} />
+      <Stack.Navigator initialRouteName='Trang cá nhân' screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Đăng nhập" component={LoginScreen} options={{ title: 'Đăng nhập'}}/>
         <Stack.Screen name="Đăng ký" component={RegisterScreen} />
         <Stack.Screen name="Xác thực CMND/CCCD" component={RegisterScreen2} />
         <Stack.Screen name="Xác thực thông tin cơ bản" component={RegisterSecreen3} />
         <Stack.Screen name="Xác thực BLX" component={RegisterScreen4} />
         <Stack.Screen name="Tài chính" component={RegisterSecreen5} />
         <Stack.Screen name="Tài sản" component={RegisterSecreen6} />
-        <Stack.Screen name="Khoản vay" component={RegisterSecreen7} />
+        <Stack.Screen name="Khoản vay" component={KhoanVaySecreen} />
+        <Stack.Screen name="Đăng ký vay" component={RegisterSecreen7} />
         <Stack.Screen name="Trang cá nhân" component={HomeSecreen} />
+        <Stack.Screen name="Lịch sử trả nợ" component={HistoryScreen} initialParams={{itemId: 0}}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );

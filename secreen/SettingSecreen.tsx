@@ -91,51 +91,50 @@ const HomeSecreen = ({ navigation }: any) => {
                 userLogin ?
                     <View>
                         <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                            <View style={{ backgroundColor: '#FFDF00', padding: 10,  flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                                    <View style={{ width: 30 }}>
-                                        <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#222222'} />
-                                    </View>
-                                    <View style={{ alignSelf: 'center' }}>
-                                        <Text style={{ color: '#222222', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
-                                    </View>
+                            {/* view avatar */}
+                            <View style={{ backgroundColor: '#FFDF00', padding: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
+                                <View style={{ width: 30 }}>
+                                    <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#222222'} />
+                                </View>
+                                <View style={{ alignSelf: 'center' }}>
+                                    <Text style={{ color: '#222222', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                                 </View>
                             </View>
 
                             <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                                <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center', fontWeight: '700' }}>Xếp hạng tín dụng của bạn</Text>
+                                <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Xếp hạng tín dụng của bạn</Text>
                             </View>
                             <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 120, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }}>
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 120, borderWidth: 1, borderColor: '#222222' }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center', padding: 20 }}>ABB</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, padding: 15, borderWidth: 1, borderColor: '#fff',borderRadius: 15}} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     navigation.navigate('Xác thực thông tin cơ bản');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Pháp Lý</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     navigation.navigate('Tài chính');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center', padding: 15 }}>Tài chính</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, padding: 15, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     navigation.navigate('Tài sản');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Tài sản</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100, borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 100 }} onPress={() => {
                                     navigation.navigate('Khoản vay');
                                 }}>
-                                    <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center', padding: 15, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }}>Khoản vay</Text>
+                                    <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center', padding: 15, borderWidth: 1, borderColor: '#222222' }}>Khoản vay</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 120, padding: 15, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: 120, padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     Alert.alert('Thông báo', 'Chức năng đang phát triển');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Hồ sơ tín dụng</Text>
@@ -143,15 +142,15 @@ const HomeSecreen = ({ navigation }: any) => {
                             </View>
 
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 10, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     Alert.alert('Thông báo', 'Chức năng đang phát triển');
                                 }}>
-                                    <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center',  }}>Bán hàng thêm như bảo hiểm</Text>
+                                    <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Bán hàng thêm như bảo hiểm</Text>
                                 </TouchableOpacity>
                             </View>
 
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 10, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     Alert.alert('Thông báo', 'Chức năng đang phát triển');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Ưu đãi</Text>
@@ -159,7 +158,7 @@ const HomeSecreen = ({ navigation }: any) => {
                             </View>
 
                             <View style={{ paddingTop: 20, paddingLeft: 10, paddingRight: 10, flexDirection: 'row', }}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 10, borderWidth: 1, borderColor: '#fff', borderRadius: 15 }} onPress={() => {
+                                <TouchableOpacity style={{ backgroundColor: '#FFDF00', width: '100%', padding: 15, borderWidth: 1, borderColor: '#222222' }} onPress={() => {
                                     Alert.alert('Thông báo', 'Chức năng đang phát triển');
                                 }}>
                                     <Text style={{ color: '#222222', fontSize: 12, textAlign: 'center' }}>Quảng cáo</Text>
