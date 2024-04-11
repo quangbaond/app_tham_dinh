@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
         // padding: 20,
         // borderWidth: 1,
     },
-    row: { height: 40, backgroundColor: '#000' },
+    row: { height: 40, backgroundColor: '#0000' },
     dataWrapper: { marginTop: -1 },
     container: {
         // flex: 1,
