@@ -157,10 +157,10 @@ const RegisterScreen = ({ navigation }: any) => {
 
                         {/* <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)} /> */}
                         <TouchableOpacity
-                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={handleSubmit(handleRegister)}
                         >
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Đăng ký</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Đăng ký</Text>
                         </TouchableOpacity>
 
                         <Text
@@ -194,10 +194,10 @@ const RegisterScreen = ({ navigation }: any) => {
                         />
                         {/* <Button title="Tiếp tục" onPress={handleSubmit(handleRegisterOTP)} /> */}
                         <TouchableOpacity
-                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={handleSubmit(handleRegisterOTP)}
                         >
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Tiếp tục</Text>
                         </TouchableOpacity>
 
                     </ImageBackground>
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         width: '90%',
         marginBottom: 10,
-        padding: 5,
+        padding: 13,
         color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.2)',
     }

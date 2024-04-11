@@ -194,7 +194,7 @@ export const KhoanVaySecreen = ({navigation }: any) => {
                         <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '500' }}>{'Khoản vay'}</Text>
                         {/* <Button title="Thêm" onPress={() => navigation.navigate('Đăng ký vay')} /> */}
                         <TouchableOpacity 
-                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                         onPress={() => navigation.navigate('Đăng ký vay')}>
                             <Text style={{ color: '#ffffff', textAlign: 'center', fontSize: 12 }}>{'Đăng ký khoản vay mới'}</Text>
                         </TouchableOpacity>

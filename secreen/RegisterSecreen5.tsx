@@ -251,7 +251,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                         <>
                                             <Image key={index} source={{ uri: item }} style={{ height: 150, marginBottom: 10, borderWidth: 1 }} />
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     const newImages = iamges.filter((item: any, i: number) => i !== index);
                                                     setImages(newImages);
@@ -264,7 +264,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             )
                         })}
                         <TouchableOpacity
-                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                             onPress={async () => {
                                 try {
                                     const granted = await PermissionsAndroid.request(
@@ -514,7 +514,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                         }
                         <View style={{ marginBottom: 10 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={() => {
                                     const newValues = defaultValuesForm.so_dien_thoai_noi_lam_viec.concat({
                                         id: defaultValuesForm.so_dien_thoai_noi_lam_viec.length + 1,
@@ -525,15 +525,15 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                                     setDefaultValues({ ...defaultValuesForm, so_dien_thoai_noi_lam_viec: newValues });
                                 }}
                             >
-                                <Text style={{ textAlign: 'center', color: '#fff' }}>Thêm người tham chiếu</Text>
+                                <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Thêm người tham chiếu</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 30 }}>
                             <TouchableOpacity
-                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
+                                style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={handleSubmit(submit)}
                             >
-                                <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                                <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Tiếp tục</Text>
                             </TouchableOpacity>
                         </View>
                     </>

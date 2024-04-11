@@ -241,7 +241,7 @@ const RegisterScreen4 = ({ navigation }: any) => {
                     </View>
                     <View style={{ marginBottom: 30 }}>
                         <TouchableOpacity 
-                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={() => {
                                 if(!userLogin?.user_finances) {
                                     navigation.navigate('Tài chính');
@@ -249,7 +249,7 @@ const RegisterScreen4 = ({ navigation }: any) => {
                                     navigation.navigate('Trang cá nhân');
                                 }
                             }}>
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Tiếp tục</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

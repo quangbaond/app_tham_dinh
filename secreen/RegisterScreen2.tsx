@@ -257,7 +257,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                             
                         }} /> */}
                         <TouchableOpacity
-                             style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                             style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={() => {
                                 if (kqMatTruoc && kqMatSau) {
                                     Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
@@ -266,7 +266,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                 navigation.navigate('Xác thực thông tin cơ bản');
                             }}
                         >
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Tiếp tục</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ marginBottom: 30 }}>

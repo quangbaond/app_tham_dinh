@@ -82,16 +82,16 @@ const LoginScreen = ({ navigation }: any) => {
                     {/* <Button title="Đăng nhập" onPress={handleLogin} /> */}
                     <View>
                         <TouchableOpacity
-                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
                             onPress={handleLogin}
                         >
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Đăng nhập</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Đăng nhập</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff'}}
+                            style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff'}}
                             onPress={() => navigation.navigate('Đăng ký')}
                         >
-                            <Text style={{ textAlign: 'center', color: '#fff' }}>Chưa có tài khoản? Đăng ký ngay</Text>
+                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Chưa có tài khoản? Đăng ký ngay</Text>
                         </TouchableOpacity>
                     </View>
                     
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         width: '90%',
         marginBottom: 10,
-        padding: 5,
+        padding: 13,
         color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.5)',
     }
