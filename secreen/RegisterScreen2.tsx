@@ -48,27 +48,27 @@ const RegisterScreen2 = ({ navigation }: any) => {
         }
     ];
 
-    useEffect(() => {
-        const saveData = async () => {
-            const userInfo = await getData('userInfo');
-            const userData = await getData('userLogin');
-            const userDataParse = JSON.parse(userData as string);
-            if (!userDataParse) {
-                Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
-                navigation.navigate('Đăng nhập');
-                return;
-            }
+    // useEffect(() => {
+    //     const saveData = async () => {
+    //         const userInfo = await getData('userInfo');
+    //         const userData = await getData('userLogin');
+    //         const userDataParse = JSON.parse(userData as string);
+    //         if (!userDataParse) {
+    //             Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+    //             navigation.navigate('Đăng nhập');
+    //             return;
+    //         }
 
-            setUserLogin(JSON.parse(userData as string));
-            if (!userInfo) {
-                await storeData('userInfo', JSON.stringify(data));
-                navigation.navigate('Xác thực thông tin cơ bản');
-            } else {
-                navigation.navigate('Xác thực thông tin cơ bản');
-            }
-        }
-        saveData()
-    }, [isFocused]);
+    //         setUserLogin(JSON.parse(userData as string));
+    //         if (!userInfo) {
+    //             await storeData('userInfo', JSON.stringify(data));
+    //             navigation.navigate('Xác thực thông tin cơ bản');
+    //         } else {
+    //             navigation.navigate('Xác thực thông tin cơ bản');
+    //         }
+    //     }
+    //     saveData()
+    // }, [isFocused]);
 
     useEffect(() => {
         if (matTruoc) {

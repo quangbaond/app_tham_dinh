@@ -43,23 +43,23 @@ const RegisterScreen4 = ({ navigation }: any) => {
         }
     ]
 
-    useEffect(() => {
-        const saveData = async () => {
-            const userData = await getData('userLogin');
-            if (!userData) {
-                Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
-                navigation.navigate('Đăng nhập');
-                return;
-            }
+    // useEffect(() => {
+    //     const saveData = async () => {
+    //         const userData = await getData('userLogin');
+    //         if (!userData) {
+    //             Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+    //             navigation.navigate('Đăng nhập');
+    //             return;
+    //         }
 
-            setUserLogin(JSON.parse(userData as string));
-            // merge data to local storage
-            await storeData('BLX', JSON.stringify(data));
+    //         setUserLogin(JSON.parse(userData as string));
+    //         // merge data to local storage
+    //         await storeData('BLX', JSON.stringify(data));
 
-            navigation.navigate('Tài chính');
-        }
-        saveData()
-    }, [isFocused]);
+    //         navigation.navigate('Tài chính');
+    //     }
+    //     saveData()
+    // }, [isFocused]);
 
     useEffect(() => {
         if (matTruoc) {
@@ -157,13 +157,10 @@ const RegisterScreen4 = ({ navigation }: any) => {
                                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                                     console.log("You can use the camera");
                                     // lunch camera
-                                    await ImagePicker.launchCamera({
+                                    await ImagePicker.launchImageLibrary({
                                         mediaType: 'photo',
                                         includeBase64: false,
-
-                                        cameraType: 'back',
-                                        saveToPhotos: true,
-                                        includeExtra: true,
+                                        selectionLimit: 1,
                                     }, (response: any) => {
                                         console.log('Response = ', response);
                                         if (response.didCancel) {
@@ -191,12 +188,10 @@ const RegisterScreen4 = ({ navigation }: any) => {
                     </View>
                     <View style={{ marginBottom: 10 }}>
                         <Button title="Mặt sau BLX" onPress={async () => {
-                            await ImagePicker.launchCamera({
+                            await ImagePicker.launchImageLibrary({
                                 mediaType: 'photo',
                                 includeBase64: false,
-                                cameraType: 'back',
-                                saveToPhotos: true,
-                                includeExtra: true,
+                                selectionLimit: 1,
                             }, (response: any) => {
                                 console.log('Response = ', response);
                                 if (response.didCancel) {
@@ -230,9 +225,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: '100%',
         height: '100%',
-        // alignContent: 'center',
-        // alignItems: 'center',
-        // padding: 20,
     },
     container: {
         // flex: 1,

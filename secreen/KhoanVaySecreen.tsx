@@ -4,10 +4,11 @@ import { useForm, Controller, set } from "react-hook-form";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, storeData } from '../common';
 import SelectDropdown, { SelectDropdownProps } from 'react-native-select-dropdown';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/AntDesign';
 import { Table, Row, Rows } from 'react-native-table-component'
 import { Dimensions } from 'react-native';
 import moment from 'moment';
+import UserAvatar from 'react-native-user-avatar';
 
 export const KhoanVaySecreen = ({navigation }: any) => {
     const screenWidth = Dimensions.get('window').width;
@@ -158,6 +159,34 @@ export const KhoanVaySecreen = ({navigation }: any) => {
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
                     textStyle={{ color: '#ffffff' }}></Spinner>}
+                <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trang cá nhân');
+                        }}>
+                            <Icon name="arrowleft" size={30} color={'#fff'}></Icon>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                        <View style={{ width: 30 }}>
+                                <UserAvatar size={30} name={userLogin?.user_identifications.name} textColor={'#ffffff'} />
+                        </View>
+
+                        <View style={{ alignSelf: 'center' }}>
+                            <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications.name}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Cài đặt');
+                        }}>
+                            <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
                     {/* <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5 }}>{'Thông tin khoản vay'}</Text> */}
@@ -171,7 +200,11 @@ export const KhoanVaySecreen = ({navigation }: any) => {
                         </TouchableOpacity>
 
                     </View>
-                    <Text style={{ color: '#ffffff', fontSize: 10, marginBottom: 5, fontWeight: '500' }}>{'(Để xem chi tiết lịch trả nợ, hãy chạm vào dòng cần xem)'}</Text>
+                    {
+                        tableData.length === 0 ? 
+                        <Text style={{ color: '#ffffff', fontSize: 10, marginBottom: 5, fontWeight: '500' }}>{'Không có dữ liệu'}</Text> :
+                        <Text style={{ color: '#ffffff', fontSize: 10, marginBottom: 5, fontWeight: '500' }}>{'(Để xem chi tiết lịch trả nợ, hãy chạm vào dòng cần xem)'}</Text>
+                    }
                     <View>
                         <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
                             <Row data={tableHead} style={styles.head} textStyle={styles.text} />
@@ -211,7 +244,7 @@ const styles = StyleSheet.create({
         // padding: 20,
         // borderWidth: 1,
     },
-    row: { height: 40, backgroundColor: '#fff' },
+    row: { height: 40, backgroundColor: '#0000' },
     dataWrapper: { marginTop: -1 },
     container: {
         // flex: 1,

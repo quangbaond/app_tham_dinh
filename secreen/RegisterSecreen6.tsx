@@ -7,6 +7,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
 import { useIsFocused } from '@react-navigation/native'
 import UserAvatar from 'react-native-user-avatar';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const RegisterSecreen6 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -232,7 +233,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                 if (data.message) {
                     Alert.alert('Thành công', data.message);
                 }
-                
+
                 if (data.user.user_loan_amounts.length <= 0) {
                     navigation.navigate('Khoản vay');
                     return
@@ -254,16 +255,38 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
                     textStyle={{ color: '#ffffff' }}></Spinner>}
-                    <View style={{ backgroundColor: '#3366CC', padding: 10,  flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                                    <View style={{ width: 30 }}>
-                                        <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
-                                    </View>
-                                    <View style={{ alignSelf: 'center' }}>
-                                        <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
-                                    </View>
-                                </View>
-                            </View>
+                <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trang cá nhân');
+                        }}>
+                            <Icon name="arrowleft" size={30} color={'#fff'}></Icon>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                        <View style={{ width: 30 }}>
+                            {(userLogin as any) && (userLogin as any).user_identifications && (
+                                <UserAvatar size={30} name={(userLogin as any).user_identifications.name} textColor={'#ffffff'} />
+                            )}
+                        </View>
+
+                        <View style={{ alignSelf: 'center' }}>
+                            {(userLogin as any) && (userLogin as any).user_identifications && (
+                                <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{(userLogin as any).user_identifications.name}</Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <View style={{ alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Cài đặt');
+                        }}>
+                            <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
                     <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5, fontWeight: '700' }}>{'Bất động sản'}</Text>
@@ -319,8 +342,8 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                         });
                                                     }}
                                                 >
-                                                    <Text style={{ color: '#ffffff', fontSize: 14,  textAlign:'center' }}>{'Xóa ảnh'}</Text>
-                                                    </TouchableOpacity>
+                                                    <Text style={{ color: '#ffffff', fontSize: 14, textAlign: 'center' }}>{'Xóa ảnh'}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                             : (
                                                 <View style={{ marginBottom: 5 }}>
@@ -361,7 +384,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                                                 const newValues = { ...prew };
                                                                                 newValues.bat_dong_san[index].hinh_anh = response.assets[0].uri;
                                                                                 console.log('newValues', newValues);
-    
+
                                                                                 return newValues;
                                                                             });
                                                                         }
@@ -394,7 +417,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                                 });
                                             }} /> */}
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     setDefaultValues((prew: any) => {
                                                         const newValues = { ...prew };
@@ -465,7 +488,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     />
                                     {errors.dong_san?.[index]?.loai_tai_san && <Text style={{ color: 'red' }}>{errors.dong_san?.[index]?.loai_tai_san?.message}</Text>}
                                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Địa chỉ'}</Text>
-                                    
+
                                     <Controller
                                         control={control}
                                         render={({ field: { onChange, onBlur, value } }) => (
@@ -619,7 +642,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
                                     defaultValuesForm.dong_san.length > 1 && (
                                         <View style={{ marginBottom: 10 }}>
                                             <TouchableOpacity
-                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15,  borderWidth: 1, borderColor: '#fff' }}
+                                                style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, borderWidth: 1, borderColor: '#fff' }}
                                                 onPress={() => {
                                                     setDefaultValues((prew: any) => {
                                                         const newValues = { ...prew };
@@ -709,7 +732,7 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 10,
-        paddingRight: 10,
+        paddingRight: 5,
         color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.4)',
     },

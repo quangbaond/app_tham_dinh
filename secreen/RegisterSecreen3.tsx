@@ -6,6 +6,7 @@ import { getData, storeData } from '../common';
 import SelectDropdown from 'react-native-select-dropdown';
 import UserAvatar from 'react-native-user-avatar';
 import { useIsFocused } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/AntDesign';
 
 export const RegisterSecreen3 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -78,12 +79,12 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                     'Authorization': `Bearer ${token}`,
                 }
             }).then((response) => response.json())
-            
+
             setDefaultValues({
                 ...defaultValuesForm,
                 phone: result.phone,
                 ...result?.user_identifications,
-                phone_reference: result?.user_phone_references?.map((item: any) => {  
+                phone_reference: result?.user_phone_references?.map((item: any) => {
                     return {
                         relationship: item.relationship,
                         name: item.name,
@@ -96,7 +97,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                 ...defaultValuesForm,
                 phone: result.phone,
                 ...result?.user_identifications,
-                phone_reference: result?.user_phone_references?.map((item: any) => {  
+                phone_reference: result?.user_phone_references?.map((item: any) => {
                     return {
                         relationship: item.relationship,
                         name: item.name,
@@ -108,6 +109,10 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
     });
 
     const submit = async (data: any) => {
+        if(data.phone_reference.length === 0) {
+            Alert.alert('Lỗi', 'Vui lòng cung cấp thông tin người thân');
+            return;
+        }
 
         setLoading(true);
         console.log(data);
@@ -153,13 +158,31 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                     textContent={'Đang tải...'}
                     textStyle={{ color: '#fff' }}></Spinner>}
                 <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trang cá nhân');
+                        }}>
+                            <Icon name="arrowleft" size={30} color={'#fff'}></Icon>
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                         <View style={{ width: 30 }}>
                             <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
                         </View>
+
                         <View style={{ alignSelf: 'center' }}>
                             <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                         </View>
+                    </View>
+
+                    <View style={{ alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Cài đặt');
+                        }}>
+                            <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -391,11 +414,11 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                                 }}
                                                 defaultValueByIndex={
                                                     value === 'Mẹ' ? 0 :
-                                                    value === 'Bố' ? 1 :
-                                                    value === 'Anh trai' ? 2 :
-                                                    value === 'Em trai' ? 3 :
-                                                    value === 'Chị gái' ? 4 :
-                                                    value === 'Em gái' ? 5 : 0
+                                                        value === 'Bố' ? 1 :
+                                                            value === 'Anh trai' ? 2 :
+                                                                value === 'Em trai' ? 3 :
+                                                                    value === 'Chị gái' ? 4 :
+                                                                        value === 'Em gái' ? 5 : 0
                                                 }
                                                 renderButton={(selectedItem, isOpened) => {
                                                     return (
@@ -495,7 +518,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                                 onPress={() => {
                                     // get data from local storage
                                     const getDataFromStorage = async () => {
-                                        const data = await getData('user');
+                                        const data = await getData('userInfo');
                                         if (data) {
                                             const newData = {
                                                 ...defaultValuesForm,
@@ -518,7 +541,7 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 30 }}>
-                        <TouchableOpacity
+                            <TouchableOpacity
                                 style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 5, borderWidth: 1, borderColor: '#fff' }}
                                 onPress={handleSubmit(submit)}
                             >

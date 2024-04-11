@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, StyleSheet, ImageBackground, Text, Button, Alert, TouchableOpacity } from 'react-native';
 import { getData, storeData } from '../common';
+import axios from 'axios';
 
 
 const LoginScreen = ({ navigation }: any) => {
@@ -19,36 +20,66 @@ const LoginScreen = ({ navigation }: any) => {
     }, []);
 
     const handleLogin = async () => {
-        fetch('https://tp.tucanhcomputer.vn/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                phone: username,
-                password: password,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if(data.error) {
-                    Alert.alert('Lỗi', data.error);
-                    return;
-                }
+        if(username === '' || password === '') {
+            Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
+            return;
+        }
+        // fetch('https://tp.tucanhcomputer.vn/api/auth/login', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         phone: username,
+        //         password: password,
+        //     }),
+        // })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         console.log('Success:', data);
                 
-                storeData('userLogin', JSON.stringify({
-                    token: data.access_token,
-                    user: data.user,
-                }));
+        //         if(data.error) {
+        //             Alert.alert('Lỗi', data.error);
+        //             return;
+        //         }
                 
-                Alert.alert('Thành công', 'Đăng nhập thành công');
-                navigation.navigate('Trang cá nhân');
-            })
-            .catch((error) => {
-                if(error) {
-                    Alert.alert('Lỗi', 'Đăng nhập thất bại');
-                }
-            })
+        //         storeData('userLogin', JSON.stringify({
+        //             token: data.access_token,
+        //             user: data.user,
+        //         }));
+                
+        //         Alert.alert('Thành công', 'Đăng nhập thành công');
+        //         navigation.navigate('Trang cá nhân');
+        //     })
+        //     .catch((error) => {
+        //         if(error) {
+        //             Alert.alert('Lỗi', 'Đăng nhập thất bại');
+        //         }
+        //     })
+        axios.post('https://tp.tucanhcomputer.vn/api/auth/login', {
+            phone: username,
+            password: password,
+        }).then((res) => {
+            console.log(res.data);
+            storeData('userLogin', JSON.stringify({
+                token: res.data.access_token,
+                user: res.data.user,
+            }));
+            Alert.alert('Thành công', 'Đăng nhập thành công');
+            navigation.navigate('Trang cá nhân');
+        }).catch((err) => {
+            console.log(err.response.data);
+            if(err.response.data.phone) {
+                Alert.alert('Lỗi', err.response.data.phone[0]);
+            }
+            if(err.response.data.password) {
+                Alert.alert('Lỗi', err.response.data.password[0]);
+            }
+            
+            if(err.response.data.error) {
+                Alert.alert('Lỗi', err.response.data.error);
+            }
+        });
     };
 
     return (
@@ -117,9 +148,9 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: '#ffffff',
-        borderRadius: 5,
+        borderRadius: 15,
         width: '90%',
-        marginBottom: 20,
+        marginBottom: 10,
         padding: 5,
         color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.5)',

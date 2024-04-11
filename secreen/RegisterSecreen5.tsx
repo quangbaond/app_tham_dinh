@@ -8,6 +8,7 @@ import { getData, mergeData, storeData } from '../common';
 import SelectDropdown from 'react-native-select-dropdown';
 import UserAvatar from 'react-native-user-avatar';
 import { useIsFocused } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const RegisterSecreen5 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -116,6 +117,12 @@ const RegisterSecreen5 = ({ navigation }: any) => {
             return;
         }
 
+        if (data.so_dien_thoai_noi_lam_viec.length <= 0) {
+            setLoading(false);
+            Alert.alert('Lỗi', 'Vui lòng nhập thông tin người tham chiếu');
+            return;
+        }
+
         const userLogin = await getData('userLogin');
         const token = JSON.parse(userLogin as string).token;
         const formData = new FormData();
@@ -180,13 +187,31 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                     textContent={'Đang tải...'}
                     textStyle={{ color: '#ffffff' }}></Spinner>}
                 <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trang cá nhân');
+                        }}>
+                            <Icon name="arrowleft" size={30} color={'#fff'}></Icon>
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                         <View style={{ width: 30 }}>
                             <UserAvatar size={30} name={userLogin?.user_identifications?.name} textColor={'#ffffff'} />
                         </View>
+
                         <View style={{ alignSelf: 'center' }}>
                             <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{userLogin?.user_identifications?.name}</Text>
                         </View>
+                    </View>
+
+                    <View style={{ alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Cài đặt');
+                        }}>
+                            <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -370,7 +395,7 @@ const RegisterSecreen5 = ({ navigation }: any) => {
                             <>
                                 <View key={index}>
                                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 5, fontWeight: '500' }}>{'Chức vụ'}</Text>
-                                    <Text style={{ color: '#3366CC', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'(Giám đốc/Quản lý công ty/Kế toán/Gia đình nhân sự...)'}</Text>
+                                    <Text style={{ color: '#ffffff', fontSize: 12, marginBottom: 5, fontWeight: '500' }}>{'(Giám đốc/Quản lý công ty/Kế toán/Gia đình nhân sự...)'}</Text>
 
                                     <Controller
                                         control={control}

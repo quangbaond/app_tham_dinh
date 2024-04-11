@@ -4,9 +4,11 @@ import { useForm, Controller, set } from "react-hook-form";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, storeData } from '../common';
 import SelectDropdown, { SelectDropdownProps } from 'react-native-select-dropdown';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Table, Row, Rows } from 'react-native-table-component'
 import { Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { useIsFocused } from '@react-navigation/native';
+import UserAvatar from 'react-native-user-avatar';
 
 export const RegisterSecreen7 = ({ navigation }: any) => {
     const screenWidth = Dimensions.get('window').width;
@@ -16,6 +18,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
     const [userLogin, setUserLogin] = useState<any>(null);
 
     const [period, setPeriod] = useState([] as any);
+    const isFocused = useIsFocused();
 
     const [defaultValuesForm, setDefaultValues] = useState({
         so_tien_vay: "",
@@ -42,36 +45,21 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
             const token = JSON.parse(userLogin as unknown as string).token;
 
             fetch('https://tp.tucanhcomputer.vn/api/auth/me', {
+                method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
-            }).then((response) => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+            }).then((response) => response.json())
+                .then((data) => {
+                    setUserLogin(data);
+                    console.log(data);
+
+                }).catch((error) => {
+                    if (error) {
+                        Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
                         navigation.navigate('Đăng nhập');
-                        return null;
                     }
-                    // if(response.status === 422) {
-                    //     console.log('response', response);
-                    //     return response;
-                    // }
-                    console.log('response', response);
-
-                }
-
-
-
-            }).then((data) => {
-                console.log('data', data);
-
-                setUserLogin(data);
-            }).catch((error) => {
-                console.log('error', error);
-                Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
-            });
+                })
         }
         const getPerod = async () => {
             setLoading(true);
@@ -158,6 +146,38 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
                     textStyle={{ color: '#ffffff' }}></Spinner>}
+                <View style={{ backgroundColor: '#3366CC', padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trang cá nhân');
+                        }}>
+                            <Icon name="arrowleft" size={30} color={'#fff'}></Icon>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                        <View style={{ width: 30 }}>
+                            {(userLogin as any) && (userLogin as any).user_identifications && (
+                                <UserAvatar size={30} name={(userLogin as any).user_identifications.name} textColor={'#ffffff'} />
+                            )}
+                        </View>
+
+                        <View style={{ alignSelf: 'center' }}>
+                            {(userLogin as any) && (userLogin as any).user_identifications && (
+                                <Text style={{ color: '#ffffff', fontSize: 14, marginLeft: 10 }}>{(userLogin as any).user_identifications.name}</Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <View style={{ alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Cài đặt');
+                        }}>
+                            <Icon name="setting" size={30} color={'#fff'}></Icon>
+
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
                 <ScrollView style={{ padding: 20, borderColor: '#ccc', borderWidth: 1 }}>
                     <Text style={{ color: '#ffffff', fontSize: 18, marginBottom: 5, fontWeight: '700' }}>{'Đăng ký vay'}</Text>
@@ -179,7 +199,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                             // check value trong form thoi_han_vay
                                             if (thoi_han_vay?.title && thoi_han_vay?.value) {
                                                 // console.log('thoi_han_vay', thoi_han_vay);
-                                                
+
                                                 const laixuat = parseFloat(thoi_han_vay.value) / 12;
 
                                                 let goc = parseInt(currency.replace(/,/g, ''));
@@ -189,7 +209,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                                 let goc_moi_ky = goc / thoihan;
                                                 let lai = 0;
                                                 let tong_goc_lai = 0;
-    
+
                                                 for (let i = 0; i <= thoihan; i++) {
                                                     console.log('laixuat', laixuat);
                                                     lai = goc_con_lai * laixuat / 100;
@@ -197,16 +217,16 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                                     goc_con_lai = goc_con_lai - goc_moi_ky;
                                                     const date = new Date();
                                                     date.setMonth(date.getMonth() + i);
-                                                    if(isNaN(tong_goc_lai)) {
+                                                    if (isNaN(tong_goc_lai)) {
                                                         tong_goc_lai = 0;
                                                     }
-    
+
                                                     lichtra.push([date.toLocaleDateString(), tong_goc_lai.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")]);
                                                 }
                                                 setTableDataMonth(lichtra);
                                             }
-                                            
-                                        
+
+
                                         }}
                                         // onKeyPress={(e) => {
                                         //     // console.log(e);
@@ -216,7 +236,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                         //     const currency = value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         //     onChange(currency);
                                         //     setMoney(parseInt(currency.replace(/,/g, '')));
-                                            
+
                                         // }}
                                         placeholderTextColor="#ffffff"
                                         placeholder='15,000,000'
@@ -225,10 +245,10 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                         returnKeyLabel="Done" />
                                 </>
                             )}
-                            name="so_tien_vay" 
-                            rules={{ required: { value: true, message: "Số tiền không được bỏ trống" }}}
-                            />
-                            {errors.so_tien_vay && <Text style={{ color: 'red' }}>{errors.so_tien_vay.message}</Text>}
+                            name="so_tien_vay"
+                            rules={{ required: { value: true, message: "Số tiền không được bỏ trống" } }}
+                        />
+                        {errors.so_tien_vay && <Text style={{ color: 'red' }}>{errors.so_tien_vay.message}</Text>}
 
                         <Controller
                             control={control}
@@ -262,7 +282,7 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
                                                 goc_con_lai = goc_con_lai - goc_moi_ky;
                                                 const date = new Date();
                                                 date.setMonth(date.getMonth() + i);
-                                                if(isNaN(tong_goc_lai)) {
+                                                if (isNaN(tong_goc_lai)) {
                                                     tong_goc_lai = 0;
                                                 }
 
@@ -292,9 +312,9 @@ export const RegisterSecreen7 = ({ navigation }: any) => {
 
                             )}
                             name="thoi_han_vay"
-                            rules={{ required: { value: true, message: "Thời hạn không được bỏ trống" }}}
-                            />
-                            {errors.thoi_han_vay && <Text style={{ color: 'red' }}>{errors.thoi_han_vay.message}</Text>}
+                            rules={{ required: { value: true, message: "Thời hạn không được bỏ trống" } }}
+                        />
+                        {errors.thoi_han_vay && <Text style={{ color: 'red' }}>{errors.thoi_han_vay.message}</Text>}
 
                         {
                             tableDataMonth.length > 0 &&
@@ -352,7 +372,7 @@ const styles = StyleSheet.create({
         // padding: 20,
         // borderWidth: 1,
     },
-    row: { height: 40, backgroundColor: '#E7E6E1' },
+    row: { height: 40, backgroundColor: '#0000' },
     dataWrapper: { marginTop: -1 },
     container: {
         // flex: 1,

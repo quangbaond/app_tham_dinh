@@ -1,9 +1,11 @@
 // LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button } from 'react-native';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, Linking, Platform, TouchableOpacity } from 'react-native';
 import { useForm, Controller } from "react-hook-form"
 import { storeData } from '../common';
 import axios from '../common/axios';
+import GetLocation from 'react-native-get-location'
+import { openSettings } from 'react-native-permissions';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [step1, setStep1] = useState(true);
@@ -22,28 +24,59 @@ const RegisterScreen = ({ navigation }: any) => {
     })
 
     const handleRegister = async (data: any) => {
-        await storeData('user', JSON.stringify(data));
-        console.log('https://tp.tucanhcomputer.vn/api/auth/register');
-        console.log(data);
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 60000,
+        })
+            .then(location => {
+                axios.post('https://tp.tucanhcomputer.vn/api/auth/register', {
+                    phone: data.phone,
+                    password: data.password,
+                    password_confirmation: data.password_confirmation,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                }).then((res) => {
+                    console.log(res.data);
+                    Alert.alert('Thành công', 'Đăng ký thành công, vui lòng nhập mã OTP để tiếp tục.')
+                    setStep1(false);
+                    setStep2(true);
+                }).catch((err) => {
+                    if (err.response.data.phone) {
+                        Alert.alert('Lỗi', err.response.data.phone[0]);
+                    }
+                    if (err.response.data.password) {
+                        Alert.alert('Lỗi', err.response.data.password[0]);
+                    }
+                });
+            })
+            .catch(error => {
+                const { code, message } = error;
+                if (code === 'CANCELLED') {
+                    Alert.alert('Lỗi', 'Lỗi hủy bỏ');
+                }
+                if (code === 'UNAVAILABLE') {
+                    Alert.alert('Lỗi', 'Không thể lấy vị trí');
+                }
+                if (code === 'TIMEOUT') {
+                    Alert.alert('Lỗi', 'Hết thời gian lấy vị trí');
+                }
+                if (code === 'UNAUTHORIZED') {
+                    Alert.alert('Lỗi', 'Không có quyền truy cập vị trí, vui lòng bật vị trí cho ứng dụng', [
+                        {
+                            text: 'Đồng ý',
+                            onPress: () => {
+                                if (Platform.OS === 'ios') {
+                                    Linking.openURL('app-settings:');
+                                } else {
+                                    Linking.openSettings();
+                                }
+                            }
+                        }
 
-        axios.post('https://tp.tucanhcomputer.vn/api/auth/register', {
-            phone: data.phone,
-            password: data.password,
-            password_confirmation: data.password_confirmation
-        }).then((res) => {
-            console.log(res.data);
+                    ]);
+                }
+            });
 
-            Alert.alert('Thành công', 'Đăng ký thành công, vui lòng nhập mã OTP để tiếp tục.')
-            setStep1(false);
-            setStep2(true);
-        }).catch((err) => {
-            if (err.response.data.errors.phone) {
-                Alert.alert('Lỗi', err.response.data.errors.phone[0]);
-            }
-            if (err.response.data.errors.password) {
-                Alert.alert('Lỗi', err.response.data.errors.password[0]);
-            }
-        });
     };
 
     const handleRegisterOTP = async (data: any) => {
@@ -121,7 +154,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     </ImageBackground>
                 ) : (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
-                        <Text style={{ color: '#ffffff', fontSize: 25, marginBottom: 20 }}>{'Nhập mã OTP'}</Text>
+                        <Text style={{ color: '#ffffff', fontSize: 20, marginBottom: 5 }}>{'Nhập mã OTP'}</Text>
 
                         <Controller
                             control={control}
@@ -141,7 +174,13 @@ const RegisterScreen = ({ navigation }: any) => {
                                 pattern: { value: /^[0-9]{6}$/, message: "OTP không hợp lệ" }
                             }}
                         />
-                        <Button title="Tiếp tục" onPress={handleSubmit(handleRegisterOTP)} />
+                        {/* <Button title="Tiếp tục" onPress={handleSubmit(handleRegisterOTP)} /> */}
+                        <TouchableOpacity
+                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            onPress={handleSubmit(handleRegisterOTP)}
+                        >
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                        </TouchableOpacity>
 
                     </ImageBackground>
                 )
@@ -169,15 +208,13 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
+        borderRadius: 15,
         width: '90%',
-        marginBottom: 20,
-        padding: 10,
+        marginBottom: 10,
+        padding: 5,
         color: '#ffffff',
         backgroundColor: 'rgba(255,255,255,0.2)',
     }
-
-
 });
 
 

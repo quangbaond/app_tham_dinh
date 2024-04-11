@@ -12,7 +12,7 @@ const HomeSecreen = ({ navigation }: any) => {
         const getUserLogin = async () => {
             const userLogin = await getData('userLogin');
             if (!userLogin) {
-                Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+                // Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
                 navigation.navigate('Đăng nhập');
                 return;
             }
