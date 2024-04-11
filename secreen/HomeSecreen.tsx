@@ -61,7 +61,7 @@ const HomeSecreen = ({ navigation }: any) => {
                 return;
             }
 
-            else if (userLogin?.user_licenses) {
+            else if (!userLogin?.user_licenses) {
                 Alert.alert('Thông báo', 'Vui lòng cung cấp thông tin bằng lái xe để tiếp tục');
                 navigation.navigate('Xác thực BLX');
                 return;
@@ -81,11 +81,6 @@ const HomeSecreen = ({ navigation }: any) => {
         }
     }, [userLogin])
 
-    // useEffect(() => {
-    //     if(isFocused){
-    //         //Update the state you want to be updated
-    //     }
-    // }, [isFocused])
     return (
         <View>
             {

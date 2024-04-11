@@ -1,11 +1,12 @@
 // LoginScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform } from 'react-native';
+import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform, TouchableOpacity } from 'react-native';
 import { useForm, Controller, set } from "react-hook-form"
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getData, mergeData, storeData } from '../common';
 import { useIsFocused } from '@react-navigation/native'
+import axios from 'axios';
 
 
 const RegisterScreen2 = ({ navigation }: any) => {
@@ -13,9 +14,9 @@ const RegisterScreen2 = ({ navigation }: any) => {
     const [matSau, setMatSau] = useState('');
     const [image, setImage] = useState('');
     const [loading, setLoading] = useState(false);
-    const [kqMatTruoc, setKqMatTruoc] = useState('');
-    const [kqMatSau, setKqMatSau] = useState('');
-    const [next, setNext] = useState(false);
+    const [kqMatTruoc, setKqMatTruoc] = useState(false);
+    const [kqMatSau, setKqMatSau] = useState(false);
+    const [next, setNext] = useState(true);
     const [userLogin, setUserLogin] = useState<any>(null);
     const isFocused = useIsFocused();
 
@@ -48,6 +49,34 @@ const RegisterScreen2 = ({ navigation }: any) => {
         }
     ];
 
+    useEffect(() => {
+        const getUserLogin = async () => {
+            const userLogin = await getData('userLogin');
+            if (!userLogin) {
+                // Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+                navigation.navigate('Đăng nhập');
+                return;
+            }
+
+            const token = JSON.parse(userLogin).token;
+
+            axios.get('https://tp.tucanhcomputer.vn/api/auth/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }).then((res) => {
+                setUserLogin(res.data);
+                console.log(res.data);
+                
+            }).catch((err) => {
+                console.log(err);
+                Alert.alert('Thông báo', 'Có lỗi xảy ra');
+                navigation.navigate('Đăng nhập');
+            });
+        }
+        getUserLogin();
+    }, [isFocused]);
+
     // useEffect(() => {
     //     const saveData = async () => {
     //         const userInfo = await getData('userInfo');
@@ -71,75 +100,73 @@ const RegisterScreen2 = ({ navigation }: any) => {
     // }, [isFocused]);
 
     useEffect(() => {
-        if (matTruoc) {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append('image_front', Platform.OS === 'ios' ? image.replace('file://', '') : image);
+        getData('userLogin').then((res) => {
+            const userLoginParse = JSON.parse(res as string);
+            const token = userLoginParse?.token;
 
-            fetch('https://tp.tucanhcomputer.vn/api/upload-cccd', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${userLogin.token}`,
-                },
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    setKqMatTruoc(data.data);
-                    setLoading(false);
-                    Alert.alert('Thông báo', 'Tải ảnh thành công');
-                })
-                .catch((error) => {
-                    setLoading(false);
-                    console.log(error);
-                    if(error.message === 'Network request failed') {
-                        Alert.alert('Thông báo', 'Không thể kết nối đến máy chủ');
-                    } else {
-                        Alert.alert('Thông báo', 'Có lỗi xảy ra');
-                    }
+            if (matTruoc) {
+                setLoading(true);
+                console.log('mat truoc', matTruoc);
+                
+                const formData = new FormData();
+                formData.append('image_front', {
+                    uri: Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matTruoc,
+                    type: 'image/jpeg',
+                    name: matTruoc.split('/').pop(),
                 });
-        }
+                
+                axios.post('https://tp.tucanhcomputer.vn/api/upload-cccd', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                }).then((res) => {
+                    console.log(res.data);
+                    setKqMatTruoc(true);
+                    Alert.alert('Thông báo', 'Tải ảnh thành công'); 
+                }).catch((err) => {
+                    console.log(err.response.data);
+                    Alert.alert('Thông báo', 'Tải ảnh thất bại');
+                }).finally(() => {
+                    setLoading(false);
+                });
+            }
+        });
+        
     }, [matTruoc]);
 
     useEffect(() => {
-        if (matSau) {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append('image_back', Platform.OS === 'ios' ? image.replace('file://', '') : image);
+        getData('userLogin').then((res) => {
+            const userLoginParse = JSON.parse(res as string);
+            const token = userLoginParse?.token;
 
-            fetch('https://tp.tucanhcomputer.vn/api/upload-cccd', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${userLogin.token}`,
-                },
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    setKqMatSau(data.data);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    setLoading(false);
-                    console.log(error);
-                    if(error.message === 'Network request failed') {
-                        Alert.alert('Thông báo', 'Không thể kết nối đến máy chủ');
-                    } else {
-                        Alert.alert('Thông báo', 'Có lỗi xảy ra');
-                    }
+            if (matSau) {
+                setLoading(true);
+                
+                const formData = new FormData();
+                formData.append('image_back', {
+                    uri: Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matSau,
+                    type: 'image/jpeg',
+                    name: matSau.split('/').pop(),
                 });
-        }
+                
+                axios.post('https://tp.tucanhcomputer.vn/api/upload-cccd', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                }).then((res) => {
+                    console.log(res.data);
+                    setKqMatSau(true);
+                    Alert.alert('Thông báo', 'Tải ảnh thành công'); 
+                }).catch((err) => {
+                    console.log(err.response.data);
+                }).finally(() => {
+                    setLoading(false);
+                });
+            }
+        });
     }, [matSau]);
-
-    useEffect(() => {
-        if (kqMatTruoc && kqMatSau) {
-            setNext(true);
-        }
-    }, [kqMatTruoc, kqMatSau]);
 
     return (
         <View >
@@ -165,12 +192,10 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                 );
                                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                                     // lunch camera
-                                    await ImagePicker.launchCamera({
+                                    await ImagePicker.launchImageLibrary({
                                         mediaType: 'photo',
                                         includeBase64: false,
-                                        cameraType: 'back',
-                                        saveToPhotos: true,
-                                        includeExtra: true,
+                                        selectionLimit: 1,
                                     }, (response: any) => {
                                         console.log('Response = ', response);
                                         if (response.didCancel) {
@@ -187,7 +212,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                     });
                                 } else {
                                     console.log("Camera permission denied");
-                                    Alert.alert('Thông báo','Không thể mở camera');
+                                    Alert.alert('Thông báo', 'Không thể mở camera');
                                 }
                             } catch (err) {
                                 console.warn('Thông báo', 'Thiết bị không hỗ trợ camera');
@@ -198,13 +223,10 @@ const RegisterScreen2 = ({ navigation }: any) => {
                     </View>
                     <View style={{ marginBottom: 10 }}>
                         <Button title="Mặt sau CCCD" onPress={async () => {
-                            const result = await ImagePicker.launchCamera({
+                            const result = await ImagePicker.launchImageLibrary({
                                 mediaType: 'photo',
                                 includeBase64: false,
-                                // tôi muốn tạo 1 chức năng chụp ảnh căn cước công dân, tập trung và focus vào khu vực chứa ảnh trong khung hình
-                                cameraType: 'back',
-                                saveToPhotos: true,
-                                includeExtra: true,
+                                selectionLimit: 1,
                             }, (response: any) => {
                                 console.log('Response = ', response);
                                 if (response.didCancel) {
@@ -226,7 +248,26 @@ const RegisterScreen2 = ({ navigation }: any) => {
                         {matSau ? <Image source={{ uri: matSau }} style={{ height: 250 }} /> : null}
                     </View>
                     <View style={{ marginBottom: 30 }}>
-                        <Button disabled={!next} title="Tải lên" onPress={() => navigation.navigate('Xác thực thông tin cơ bản') } />
+                        {/* <Button  title="Tiếp tục" onPress={() => {
+                            if (matTruoc && matSau) {
+                                navigation.navigate('Xác thực thông tin cơ bản');
+                                return
+                            }
+                            Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
+                            
+                        }} /> */}
+                        <TouchableOpacity
+                             style={{ backgroundColor: '#3366CC', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            onPress={() => {
+                                if (kqMatTruoc && kqMatSau) {
+                                    Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
+                                    return;
+                                }
+                                navigation.navigate('Xác thực thông tin cơ bản');
+                            }}
+                        >
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Tiếp tục</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={{ marginBottom: 30 }}>
                         {/* // hiển thị thông tin */}

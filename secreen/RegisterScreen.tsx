@@ -6,10 +6,12 @@ import { storeData } from '../common';
 import axios from '../common/axios';
 import GetLocation from 'react-native-get-location'
 import { openSettings } from 'react-native-permissions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [step1, setStep1] = useState(true);
     const [step2, setStep2] = useState(false);
+    const [loading, setLoading] = useState(false);
     const {
         control,
         handleSubmit,
@@ -24,23 +26,28 @@ const RegisterScreen = ({ navigation }: any) => {
     })
 
     const handleRegister = async (data: any) => {
+        setLoading(true);
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 60000,
         })
             .then(location => {
+                console.log(location);
+                
                 axios.post('https://tp.tucanhcomputer.vn/api/auth/register', {
                     phone: data.phone,
                     password: data.password,
                     password_confirmation: data.password_confirmation,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
+                    latitude: location.latitude.toString(),
+                    longitude: location.longitude.toString(),
                 }).then((res) => {
                     console.log(res.data);
                     Alert.alert('Thành công', 'Đăng ký thành công, vui lòng nhập mã OTP để tiếp tục.')
                     setStep1(false);
                     setStep2(true);
                 }).catch((err) => {
+                    console.log(err.response.data);
+                    
                     if (err.response.data.phone) {
                         Alert.alert('Lỗi', err.response.data.phone[0]);
                     }
@@ -75,8 +82,9 @@ const RegisterScreen = ({ navigation }: any) => {
 
                     ]);
                 }
+            }).finally(() => {
+                setLoading(false);
             });
-
     };
 
     const handleRegisterOTP = async (data: any) => {
@@ -91,6 +99,9 @@ const RegisterScreen = ({ navigation }: any) => {
             {
                 step1 ? (
                     <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
+                        {loading && <Spinner visible={loading}
+                    textContent={'Đang tải...'}
+                    textStyle={{ color: '#ffffff' }}></Spinner>}
                         <Text style={{ color: '#ffffff', fontSize: 25, marginBottom: 20 }}>{'Đăng ký'}</Text>
                         <Controller
                             control={control}
@@ -144,7 +155,14 @@ const RegisterScreen = ({ navigation }: any) => {
                         />
 
 
-                        <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)} />
+                        {/* <Button title="Đăng Ký" onPress={handleSubmit(handleRegister)} /> */}
+                        <TouchableOpacity
+                            style={{ backgroundColor: '#3366CC', width: '90%', padding: 5, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                            onPress={handleSubmit(handleRegister)}
+                        >
+                            <Text style={{ textAlign: 'center', color: '#fff' }}>Đăng ký</Text>
+                        </TouchableOpacity>
+
                         <Text
                             onPress={() => navigation.navigate('Đăng nhập')}
                             style={{ color: '#ffffff', marginTop: 20, textAlign: 'center' }}>

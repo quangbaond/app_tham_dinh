@@ -7,6 +7,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import UserAvatar from 'react-native-user-avatar';
 import { useIsFocused } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/AntDesign';
+import axios from 'axios';
 
 export const RegisterSecreen3 = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -119,36 +120,58 @@ export const RegisterSecreen3 = ({ navigation }: any) => {
 
         const userLogin = await getData('userLogin');
         const token = JSON.parse(userLogin ?? '').token;
-        fetch('https://tp.tucanhcomputer.vn/api/update-user', {
-            method: 'POST',
+        // fetch('https://tp.tucanhcomputer.vn/api/update-user', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Authorization': `Bearer ${token}`,
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        // })
+        //     .then((response) => response.json())
+        //     .then((responseJson) => {
+        //         console.log(responseJson);
+
+        //         setLoading(false);
+        //         if (responseJson.error) {
+        //             Alert.alert('Lỗi', responseJson.error);
+        //             return;
+        //         }
+
+        //         navigation.navigate('Trang cá nhân');
+
+        //         // storeData('userLogin', JSON.stringify({
+        //         //     token: token,
+        //         //     ...responseJson,
+        //         // }));
+        //     })
+        //     .catch((error) => {
+        //         setLoading(false);
+        //         console.log(error);
+        //         Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
+        //     });
+        axios.post('https://tp.tucanhcomputer.vn/api/update-user', data, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-
-                setLoading(false);
-                if (responseJson.error) {
-                    Alert.alert('Lỗi', responseJson.error);
-                    return;
-                }
-
+            }
+        }).then((res) => {
+            console.log(res.data);
+            Alert.alert('Thành công', 'Cập nhật thông tin thành công');
+            
+            if(!res.data.user_licenses) {
+                navigation.navigate('Xác thực BLX');
+            } else {
                 navigation.navigate('Trang cá nhân');
-
-                // storeData('userLogin', JSON.stringify({
-                //     token: token,
-                //     ...responseJson,
-                // }));
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.log(error);
-                Alert.alert('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại sau');
-            });
+            }
+        }).catch((err) => {
+            console.log(err.response.data);
+            if(err.response.data.error) {
+                Alert.alert('Lỗi', err.response.data.error);
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
     return (

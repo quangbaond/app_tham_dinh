@@ -216,7 +216,7 @@ const RegisterSecreen6 = ({ navigation }: any) => {
             body: formData,
         }).then((response) => {
             if (!response.ok) {
-                console.log('response', response.status);
+                console.log('response', response.text());
                 throw new Error('Có lỗi xảy ra');
 
             }
