@@ -106,8 +106,6 @@ const RegisterScreen2 = ({ navigation }: any) => {
 
             if (matTruoc) {
                 setLoading(true);
-                console.log('mat truoc', matTruoc);
-                
                 const formData = new FormData();
                 formData.append('image_front', {
                     uri: Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matTruoc,
@@ -126,7 +124,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                     Alert.alert('Thông báo', 'Tải ảnh thành công'); 
                 }).catch((err) => {
                     console.log(err.response.data);
-                    Alert.alert('Thông báo', 'Tải ảnh thất bại');
+                    Alert.alert('Lỗi', 'Vui lòng chụp rõ nét ảnh mặt trước');
                 }).finally(() => {
                     setLoading(false);
                 });
@@ -158,8 +156,8 @@ const RegisterScreen2 = ({ navigation }: any) => {
                 }).then((res) => {
                     console.log(res.data);
                     setKqMatSau(true);
-                    Alert.alert('Thông báo', 'Tải ảnh thành công'); 
                 }).catch((err) => {
+                    Alert.alert('Lỗi', 'Vui lòng chụp rõ nét ảnh mặt sau');
                     console.log(err.response.data);
                 }).finally(() => {
                     setLoading(false);
