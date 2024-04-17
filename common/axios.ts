@@ -1,11 +1,8 @@
 import axios from 'axios';
+import { Alert } from 'react-native';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  }
 });
 
 instance.interceptors.request.use(
@@ -15,14 +12,27 @@ instance.interceptors.request.use(
   }
 );
 
-axios.interceptors.response.use(function (response) {
-  // Any status code that lie within the range of 2xx cause this function to trigger
-  // Do something with response data
+instance.interceptors.response.use(response => {
   return response;
-}, function (error) {
-  // Any status codes that falls outside the range of 2xx cause this function to trigger
-  // Do something with response error
+}, (error) => {
+  if(error.message === 'Network Error') {
+    Alert.alert('Lỗi', 'Không thể kết nối đến máy chủ');
+    return Promise.reject(error);
+  }
+  if(error.response.status === 401) {
+    Alert.alert('Lỗi', 'Vui lòng đăng nhập lại', [
+      {
+        text: 'Đăng nhập',
+        onPress: () => {
+          // di chuyển đến trang login băng navigation
+
+        }
+      }
+    
+    ]);
+  }
+  
   return Promise.reject(error);
-});
+})
 
 export default instance;
