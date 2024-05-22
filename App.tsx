@@ -25,8 +25,8 @@ function App(): React.JSX.Element {
   const [loading, setLoading] = React.useState(false);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Trang cá nhân' screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Đăng nhập" component={LoginScreen} options={{ title: 'Đăng nhập'}}/>
+      <Stack.Navigator initialRouteName='Đăng nhập' screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Đăng nhập" component={LoginScreen} options={{ title: 'Đăng nhập' }} />
         <Stack.Screen name="Đăng ký" component={RegisterScreen} />
         <Stack.Screen name="Xác thực CMND/CCCD" component={RegisterScreen2} />
         <Stack.Screen name="Xác thực thông tin cơ bản" component={RegisterSecreen3} />
@@ -38,7 +38,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name="Trang cá nhân" component={HomeSecreen} />
         <Stack.Screen name="Cài đặt" component={SettingSecreen} />
 
-        <Stack.Screen name="Lịch sử trả nợ" component={HistoryScreen} initialParams={{itemId: 0}}/>
+        <Stack.Screen name="Lịch sử trả nợ" component={HistoryScreen} initialParams={{ itemId: 0 }} />
 
       </Stack.Navigator>
     </NavigationContainer>

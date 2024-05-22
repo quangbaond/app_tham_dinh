@@ -15,11 +15,11 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(response => {
   return response;
 }, (error) => {
-  if(error.message === 'Network Error') {
+  if (error.message === 'Network Error') {
     Alert.alert('Lỗi', 'Không thể kết nối đến máy chủ');
     return Promise.reject(error);
   }
-  if(error.response.status === 401) {
+  if (error.response.status === 401) {
     Alert.alert('Lỗi', 'Vui lòng đăng nhập lại', [
       {
         text: 'Đăng nhập',
@@ -28,10 +28,10 @@ instance.interceptors.response.use(response => {
 
         }
       }
-    
+
     ]);
   }
-  
+
   return Promise.reject(error);
 })
 

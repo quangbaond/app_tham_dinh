@@ -1,12 +1,12 @@
 // LoginScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, StyleSheet, ImageBackground, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform, TouchableOpacity } from 'react-native';
-import { useForm, Controller, set } from "react-hook-form"
+import { View, StyleSheet, Text, Alert, Button, PermissionsAndroid, Image, ScrollView, Platform, TouchableOpacity, Animated } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { getData, mergeData, storeData } from '../common';
+import { fadeAnim, getData } from '../common';
 import { useIsFocused } from '@react-navigation/native'
-import axios from 'axios';
+import axios from '../common/axios';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const RegisterScreen2 = ({ navigation }: any) => {
@@ -49,55 +49,36 @@ const RegisterScreen2 = ({ navigation }: any) => {
         }
     ];
 
+    const [step, setStep] = useState(0);
+
     useEffect(() => {
-        const getUserLogin = async () => {
-            const userLogin = await getData('userLogin');
-            if (!userLogin) {
-                // Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
-                navigation.navigate('Đăng nhập');
-                return;
-            }
+        // const getUserLogin = async () => {
+        //     const userLogin = await getData('userLogin');
+        //     if (!userLogin) {
+        //         // Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
+        //         navigation.navigate('Đăng nhập');
+        //         return;
+        //     }
 
-            const token = JSON.parse(userLogin).token;
+        //     const token = JSON.parse(userLogin).token;
 
-            axios.get('https://tp.tucanhcomputer.vn/api/auth/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            }).then((res) => {
-                setUserLogin(res.data);
-                console.log(res.data);
-                
-            }).catch((err) => {
-                console.log(err);
-                Alert.alert('Thông báo', 'Có lỗi xảy ra');
-                navigation.navigate('Đăng nhập');
-            });
-        }
-        getUserLogin();
+        //     axios.get('https://tp.tucanhcomputer.vn/api/auth/me', {
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`,
+        //         }
+        //     }).then((res) => {
+        //         setUserLogin(res.data);
+        //         console.log(res.data);
+
+        //     }).catch((err) => {
+        //         console.log(err);
+        //         Alert.alert('Thông báo', 'Có lỗi xảy ra');
+        //         navigation.navigate('Đăng nhập');
+        //     });
+        // }
+        // getUserLogin();
     }, [isFocused]);
 
-    // useEffect(() => {
-    //     const saveData = async () => {
-    //         const userInfo = await getData('userInfo');
-    //         const userData = await getData('userLogin');
-    //         const userDataParse = JSON.parse(userData as string);
-    //         if (!userDataParse) {
-    //             Alert.alert('Thông báo', 'Vui lòng đăng nhập để tiếp tục');
-    //             navigation.navigate('Đăng nhập');
-    //             return;
-    //         }
-
-    //         setUserLogin(JSON.parse(userData as string));
-    //         if (!userInfo) {
-    //             await storeData('userInfo', JSON.stringify(data));
-    //             navigation.navigate('Xác thực thông tin cơ bản');
-    //         } else {
-    //             navigation.navigate('Xác thực thông tin cơ bản');
-    //         }
-    //     }
-    //     saveData()
-    // }, [isFocused]);
 
     useEffect(() => {
         getData('userLogin').then((res) => {
@@ -112,8 +93,8 @@ const RegisterScreen2 = ({ navigation }: any) => {
                     type: 'image/jpeg',
                     name: matTruoc.split('/').pop(),
                 });
-                
-                axios.post('https://tp.tucanhcomputer.vn/api/upload-cccd', formData, {
+
+                axios.post('/upload-cccd', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`,
@@ -121,7 +102,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                 }).then((res) => {
                     console.log(res.data);
                     setKqMatTruoc(true);
-                    Alert.alert('Thông báo', 'Tải ảnh thành công'); 
+                    Alert.alert('Thông báo', 'Tải ảnh thành công');
                 }).catch((err) => {
                     console.log(err.response.data);
                     Alert.alert('Lỗi', 'Vui lòng chụp rõ nét ảnh mặt trước');
@@ -130,7 +111,7 @@ const RegisterScreen2 = ({ navigation }: any) => {
                 });
             }
         });
-        
+
     }, [matTruoc]);
 
     useEffect(() => {
@@ -140,15 +121,15 @@ const RegisterScreen2 = ({ navigation }: any) => {
 
             if (matSau) {
                 setLoading(true);
-                
+
                 const formData = new FormData();
                 formData.append('image_back', {
                     uri: Platform.OS === 'ios' ? matTruoc.replace('file://', '') : matSau,
                     type: 'image/jpeg',
                     name: matSau.split('/').pop(),
                 });
-                
-                axios.post('https://tp.tucanhcomputer.vn/api/upload-cccd', formData, {
+
+                axios.post('/upload-cccd', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`,
@@ -167,30 +148,65 @@ const RegisterScreen2 = ({ navigation }: any) => {
     }, [matSau]);
 
     return (
-        <View >
-            <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}>
+        <LinearGradient colors={['#5fe3ff', '#718ce0', '#eaffff', '#5fe3ff']} start={{ x: 0.7, y: 0 }} style={styles.container}>
+            <Animated.View style={[styles.fadingContainer, { opacity: fadeAnim, }]}>
+                {/* <ImageBackground source={require('../assets/logo/logo.jpg')} resizeMode="cover" style={styles.image}> */}
                 {loading && <Spinner visible={loading}
                     textContent={'Đang tải...'}
-                    textStyle={{ color: '#ffffff' }}></Spinner>}
+                    textStyle={{ color: '#ffffff' }}>
+                </Spinner>}
+                {
+                    step === 1 ? (
+                        <ScrollView >
+                            <Text style={{ color: '#ffffff', fontSize: 25, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
+                            <View style={{ marginBottom: 10 }}>
 
-                <ScrollView style={{ padding: 20 }}>
-                    <Text style={{ color: '#ffffff', fontSize: 25, marginBottom: 20 }}>{'Thông tin cơ bản'}</Text>
-                    <View style={{ marginBottom: 10 }}>
-                        <Button title="Mặt trước CCCD" onPress={async () => {
-                            try {
-                                const granted = await PermissionsAndroid.request(
-                                    PermissionsAndroid.PERMISSIONS.CAMERA,
-                                    {
-                                        title: "Camera Permission",
-                                        message: "App needs access to your camera ",
-                                        buttonNeutral: "Ask Me Later",
-                                        buttonNegative: "Cancel",
-                                        buttonPositive: "OK"
+                                <Button title="Mặt trước CCCD" onPress={async () => {
+                                    try {
+                                        const granted = await PermissionsAndroid.request(
+                                            PermissionsAndroid.PERMISSIONS.CAMERA,
+                                            {
+                                                title: "Camera Permission",
+                                                message: "App needs access to your camera ",
+                                                buttonNeutral: "Ask Me Later",
+                                                buttonNegative: "Cancel",
+                                                buttonPositive: "OK"
+                                            }
+                                        );
+                                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                            // lunch camera
+                                            await ImagePicker.launchImageLibrary({
+                                                mediaType: 'photo',
+                                                includeBase64: false,
+                                                selectionLimit: 1,
+                                            }, (response: any) => {
+                                                console.log('Response = ', response);
+                                                if (response.didCancel) {
+                                                    console.log('User cancelled image picker');
+                                                    Alert.alert('Tạm dừng chụp ảnh');
+                                                } else if (response.error) {
+                                                    console.log('Có lỗi xảy ra: ', response.error);
+                                                } else if (response.customButton) {
+                                                    console.log('User tapped custom button: ', response.customButton);
+                                                } else {
+                                                    console.log(response.assets[0].uri);
+                                                    setMatTruoc(response.assets[0].uri);
+                                                }
+                                            });
+                                        } else {
+                                            console.log("Camera permission denied");
+                                            Alert.alert('Thông báo', 'Không thể mở camera');
+                                        }
+                                    } catch (err) {
+                                        console.warn('Thông báo', 'Thiết bị không hỗ trợ camera');
+                                        Alert.alert('Thông báo', 'Thiết bị không hỗ trợ camera');
                                     }
-                                );
-                                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                    // lunch camera
-                                    await ImagePicker.launchImageLibrary({
+                                }} />
+                                {matTruoc ? <Image source={{ uri: matTruoc }} style={{ height: 250 }} /> : null}
+                            </View>
+                            <View style={{ marginBottom: 10 }}>
+                                <Button title="Mặt sau CCCD" onPress={async () => {
+                                    const result = await ImagePicker.launchImageLibrary({
                                         mediaType: 'photo',
                                         includeBase64: false,
                                         selectionLimit: 1,
@@ -205,80 +221,51 @@ const RegisterScreen2 = ({ navigation }: any) => {
                                             console.log('User tapped custom button: ', response.customButton);
                                         } else {
                                             console.log(response.assets[0].uri);
-                                            setMatTruoc(response.assets[0].uri);
+                                            setMatSau(response.assets[0].uri);
                                         }
-                                    });
-                                } else {
-                                    console.log("Camera permission denied");
-                                    Alert.alert('Thông báo', 'Không thể mở camera');
-                                }
-                            } catch (err) {
-                                console.warn('Thông báo', 'Thiết bị không hỗ trợ camera');
-                                Alert.alert('Thông báo', 'Thiết bị không hỗ trợ camera');
-                            }
-                        }} />
-                        {matTruoc ? <Image source={{ uri: matTruoc }} style={{ height: 250 }} /> : null}
-                    </View>
-                    <View style={{ marginBottom: 10 }}>
-                        <Button title="Mặt sau CCCD" onPress={async () => {
-                            const result = await ImagePicker.launchImageLibrary({
-                                mediaType: 'photo',
-                                includeBase64: false,
-                                selectionLimit: 1,
-                            }, (response: any) => {
-                                console.log('Response = ', response);
-                                if (response.didCancel) {
-                                    console.log('User cancelled image picker');
-                                    Alert.alert('Tạm dừng chụp ảnh');
-                                } else if (response.error) {
-                                    console.log('Có lỗi xảy ra: ', response.error);
-                                } else if (response.customButton) {
-                                    console.log('User tapped custom button: ', response.customButton);
-                                } else {
-                                    console.log(response.assets[0].uri);
-                                    setMatSau(response.assets[0].uri);
-                                }
-                            }
-                            );
-                        }} />
+                                    }
+                                    );
+                                }} />
+                                {matSau ? <Image source={{ uri: matSau }} style={{ height: 250 }} /> : null}
+                            </View>
+                            <View style={{ marginBottom: 30 }}>
+                                <TouchableOpacity
+                                    style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
+                                    onPress={() => {
+                                        if (kqMatTruoc && kqMatSau) {
+                                            Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
+                                            return;
+                                        }
+                                        navigation.navigate('Xác thực thông tin cơ bản');
+                                    }}
+                                >
+                                    <Text style={{ textAlign: 'center', color: '#fff', fontSize: 18 }}>Tiếp tục</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ marginBottom: 30 }}>
+                                {/* // hiển thị thông tin */}
+                                <Text style={{ color: '#ffffff', marginBottom: 10 }}>{kqMatTruoc}</Text>
+                                <Text style={{ color: '#ffffff', marginBottom: 10 }}>{kqMatSau}</Text>
+                            </View>
+                        </ScrollView>
+                    ) : (
+                        <View>
+                            <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 20 }}>Xác thực tải khoản giúp bạn:</Text>
+                        </View>
+                    )
+                }
 
-                        {/*  hiển thị hình ảnh */}
-                        {matSau ? <Image source={{ uri: matSau }} style={{ height: 250 }} /> : null}
-                    </View>
-                    <View style={{ marginBottom: 30 }}>
-                        {/* <Button  title="Tiếp tục" onPress={() => {
-                            if (matTruoc && matSau) {
-                                navigation.navigate('Xác thực thông tin cơ bản');
-                                return
-                            }
-                            Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
-                            
-                        }} /> */}
-                        <TouchableOpacity
-                             style={{ backgroundColor: '#3366CC', padding: 13, borderRadius: 15, marginTop: 10, borderWidth: 1, borderColor: '#fff' }}
-                            onPress={() => {
-                                if (kqMatTruoc && kqMatSau) {
-                                    Alert.alert('Thông báo', 'Vui lòng chụp ảnh mặt trước và mặt sau CCCD');
-                                    return;
-                                }
-                                navigation.navigate('Xác thực thông tin cơ bản');
-                            }}
-                        >
-                            <Text style={{ textAlign: 'center', color: '#fff', fontSize:  18 }}>Tiếp tục</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ marginBottom: 30 }}>
-                        {/* // hiển thị thông tin */}
-                        <Text style={{ color: '#ffffff', marginBottom: 10 }}>{kqMatTruoc}</Text>
-                        <Text style={{ color: '#ffffff', marginBottom: 10 }}>{kqMatSau}</Text>
-                    </View>
-                </ScrollView>
-            </ImageBackground>
-        </View>
+            </Animated.View>
+        </LinearGradient>
     );
 };
 
 const styles = StyleSheet.create({
+    fadingContainer: {
+        // backgroundColor: 'powderblue',
+        height: '100%',
+        padding: 15,
+    },
 
     image: {
         justifyContent: "center",
